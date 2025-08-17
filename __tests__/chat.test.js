@@ -39,8 +39,23 @@ describe('/api/chat', () => {
     expect(res._getData()).toBe(JSON.stringify({ ok: true }));
   });
 
-  it('rejects non-POST requests', async () => {
+  it('returns healthcheck on GET', async () => {
     const { req, res } = createMocks({ method: 'GET' });
+    await handler(req, res);
+    expect(res._getStatusCode()).toBe(200);
+    const data = JSON.parse(res._getData());
+    expect(data.ok).toBe(true);
+    expect(data.env).toMatchObject({
+      CHAT_WEBHOOK_URL: true,
+      CHAT_BASIC_USER: true,
+      CHAT_BASIC_PASS: true,
+      CHAT_SHARED_SECRET: true,
+      ALLOWED_ORIGIN: expect.any(String),
+    });
+  });
+
+  it('rejects unsupported methods', async () => {
+    const { req, res } = createMocks({ method: 'PUT' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(405);
   });

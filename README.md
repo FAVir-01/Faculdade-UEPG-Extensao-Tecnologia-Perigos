@@ -20,7 +20,7 @@ Healthcheck (verifica se as variáveis de ambiente estão configuradas):
 curl -s https://SEU-APP.vercel.app/api/chat | jq
 # {
 #   "ok": true,
-#   "hasEnv": { "CHAT_WEBHOOK_URL": true, ... }
+#   "env": { "CHAT_WEBHOOK_URL": true, ... }
 # }
 ```
 
