@@ -1,7 +1,7 @@
 // pages/api/chat.js
 
 export default async function handler(req, res) {
-  // CORS — ajuste se seu front estiver em GitHub Pages
+  // CORS
   const allowed = process.env.ALLOWED_ORIGIN || '*';
   res.setHeader('Access-Control-Allow-Origin', allowed);
   res.setHeader('Vary', 'Origin');
@@ -10,7 +10,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') return res.status(204).end();
 
-  // Healthcheck simples (útil para ver envs na Vercel)
+  // Healthcheck básico
   if (req.method === 'GET') {
     return res.status(200).json({
       ok: true,
@@ -49,8 +49,8 @@ export default async function handler(req, res) {
 
   try {
     const basic = Buffer.from(`${CHAT_BASIC_USER}:${CHAT_BASIC_PASS}`).toString('base64');
-
     const payload = typeof req.body === 'object' ? req.body : {};
+
     const upstream = await fetch(CHAT_WEBHOOK_URL, {
       method: 'POST',
       headers: {
@@ -72,3 +72,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: 'Proxy failed', details: String(err) });
   }
 }
+

@@ -1,18 +1,32 @@
 # Chat Proxy
 
-Endpoint Next.js `/api/chat` que encaminha o corpo JSON recebido para `CHAT_WEBHOOK_URL` utilizando cabeçalhos:
+Endpoint Next.js `/api/chat` que encaminha o corpo JSON recebido para `CHAT_WEBHOOK_URL` utilizando cabeçalhos de autenticação e assinatura.
 
-- `Authorization: Basic user:pass` (a partir de `CHAT_BASIC_USER` e `CHAT_BASIC_PASS`)
-- `X-Signature: CHAT_SHARED_SECRET`
+## `/api/chat`
 
-O status e o corpo retornados pelo webhook são repassados ao cliente.
+- **URL:** `/api/chat`
+- **Variáveis de ambiente:**
+  - `CHAT_WEBHOOK_URL`
+  - `CHAT_BASIC_USER`
+  - `CHAT_BASIC_PASS`
+  - `CHAT_SHARED_SECRET`
+  - `ALLOWED_ORIGIN` (opcional)
 
-## Variáveis de ambiente
+### Como testar
 
-- `CHAT_WEBHOOK_URL`
-- `CHAT_BASIC_USER`
-- `CHAT_BASIC_PASS`
-- `CHAT_SHARED_SECRET`
+Healthcheck:
+
+```bash
+curl -s https://SEU-APP.vercel.app/api/chat | jq
+```
+
+POST simples:
+
+```bash
+curl -i -X POST https://SEU-APP.vercel.app/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"ping":"ok"}'
+```
 
 ## Desenvolvimento
 
@@ -25,3 +39,4 @@ npm run dev
 ```bash
 npm test
 ```
+
