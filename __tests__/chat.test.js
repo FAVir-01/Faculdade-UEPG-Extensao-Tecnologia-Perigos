@@ -1,4 +1,4 @@
-const handler = require('../pages/api/chat').default;
+const handler = require('../pages/api/chat');
 const { createMocks } = require('node-mocks-http');
 
 describe('/api/chat', () => {
