@@ -7,7 +7,7 @@ function setCors(res) {
   res.setHeader("Access-Control-Max-Age", "86400");
 }
 
-async function handler(req, res) {
+export default async function handler(req, res) {
   setCors(res);
 
   if (req.method === "OPTIONS") return res.status(204).end();
@@ -55,5 +55,3 @@ async function handler(req, res) {
     return res.status(500).json({ error: "Failed to call webhook", detail: err?.message || "unknown" });
   }
 }
-
-module.exports = handler;
