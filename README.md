@@ -14,14 +14,11 @@ Endpoint Next.js `/api/chat` que encaminha o corpo JSON recebido para `CHAT_WEBH
 
 ### Como testar
 
-Healthcheck (verifica se as variáveis de ambiente estão configuradas):
+Healthcheck:
 
 ```bash
-curl -s https://SEU-APP.vercel.app/api/chat | jq
-# {
-#   "ok": true,
-#   "env": { "CHAT_WEBHOOK_URL": true, ... }
-# }
+curl -s https://SEU-APP.vercel.app/api/chat
+# {"ok":true}
 ```
 
 POST simples:
