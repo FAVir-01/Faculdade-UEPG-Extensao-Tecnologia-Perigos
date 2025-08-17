@@ -43,15 +43,16 @@ describe('/api/chat', () => {
     const { req, res } = createMocks({ method: 'GET' });
     await handler(req, res);
     expect(res._getStatusCode()).toBe(200);
-    const data = JSON.parse(res._getData());
-    expect(data.ok).toBe(true);
-    expect(data.env).toMatchObject({
-      CHAT_WEBHOOK_URL: true,
-      CHAT_BASIC_USER: true,
-      CHAT_BASIC_PASS: true,
-      CHAT_SHARED_SECRET: true,
-      ALLOWED_ORIGIN: expect.any(String),
-    });
+    expect(res._getData()).toBe(JSON.stringify({ ok: true }));
+  });
+
+  it('handles CORS preflight', async () => {
+    process.env.ALLOWED_ORIGIN = 'https://allowed.example';
+    const { req, res } = createMocks({ method: 'OPTIONS' });
+    await handler(req, res);
+    expect(res._getStatusCode()).toBe(204);
+    expect(res.getHeader('Access-Control-Allow-Origin')).toBe('https://allowed.example');
+    delete process.env.ALLOWED_ORIGIN;
   });
 
   it('rejects unsupported methods', async () => {
