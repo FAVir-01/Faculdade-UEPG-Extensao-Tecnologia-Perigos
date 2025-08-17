@@ -20,6 +20,7 @@ export default async function handler(req, res) {
         CHAT_BASIC_USER: !!process.env.CHAT_BASIC_USER,
         CHAT_BASIC_PASS: !!process.env.CHAT_BASIC_PASS,
         CHAT_SHARED_SECRET: !!process.env.CHAT_SHARED_SECRET,
+        ALLOWED_ORIGIN: !!process.env.ALLOWED_ORIGIN,
       },
     });
   }
