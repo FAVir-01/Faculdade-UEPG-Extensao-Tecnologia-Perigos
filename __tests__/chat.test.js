@@ -1,5 +1,5 @@
-const handler = require('../pages/api/chat');
-const { createMocks } = require('node-mocks-http');
+import handler from '../pages/api/chat.js';
+import { createMocks } from 'node-mocks-http';
 
 describe('/api/chat', () => {
   beforeEach(() => {
