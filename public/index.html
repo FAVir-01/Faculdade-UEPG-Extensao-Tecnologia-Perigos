@@ -186,6 +186,7 @@
             border-radius: 12px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             padding: 16px;
+            position: relative;
         }
 
         .hero-animation.only {
@@ -196,6 +197,15 @@
         .hero-animation svg {
             width: 100% !important;
             height: auto !important;
+        }
+
+        .hero-animation__fallback {
+            width: 100%;
+            text-align: center;
+            color: var(--teal-dark);
+            font-weight: 500;
+            padding: 24px 12px;
+            line-height: 1.5;
         }
 
         .hidden {
@@ -723,7 +733,11 @@
                 <p>Bem-vindo à campanha "Cuidado com as Telas", uma iniciativa para conscientizar sobre os riscos do uso excessivo de dispositivos digitais por crianças e oferecer soluções práticas para pais e educadores.</p>
                 <button type="button" class="btn" id="saibaMaisBtn">Saiba mais</button>
             </div>
-            <div class="hero-animation animate-on-scroll" id="heroAnimation"></div>
+            <div class="hero-animation animate-on-scroll" id="heroAnimation" aria-live="polite" role="img">
+                <div class="hero-animation__fallback" id="heroAnimationFallback">
+                    Carregando animação interativa...
+                </div>
+            </div>
         </div>
     </section>
 

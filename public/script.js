@@ -2,6 +2,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const links = document.querySelectorAll('a[href^="#"]');
     const heroAnimationContainer = document.getElementById('heroAnimation');
+    const heroAnimationFallback = document.getElementById('heroAnimationFallback');
     const heroContent = document.getElementById('heroContent');
     const heroContainer = document.getElementById('heroContainer');
     const saibaMaisBtn = document.getElementById('saibaMaisBtn');
@@ -34,6 +35,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 preserveAspectRatio: 'xMidYMid meet'
             }
         });
+
+        heroAnimationInstance.addEventListener('DOMLoaded', () => {
+            heroAnimationFallback?.classList.add('hidden');
+        });
+
+        heroAnimationInstance.addEventListener('data_failed', () => {
+            if (heroAnimationFallback) {
+                heroAnimationFallback.textContent = 'Não foi possível carregar a animação. Verifique se o arquivo animation.json está na pasta "public".';
+                heroAnimationFallback.classList.remove('hidden');
+            }
+        });
+    } else if (heroAnimationFallback) {
+        heroAnimationFallback.textContent = 'Seu navegador não suporta a animação interativa.';
     }
 
     if (saibaMaisBtn) {
@@ -83,16 +97,23 @@ document.addEventListener("DOMContentLoaded", () => {
             const sectionId = current.getAttribute('id');
             
             if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                document.querySelector('.mobile-nav a[href*=' + sectionId + ']').classList.add('active');
-                document.querySelector('.main-nav a[href*=' + sectionId + ']')?.classList.add('active');
+                const mobileLink = document.querySelector('.mobile-nav a[href*=' + sectionId + ']');
+                const mainLink = document.querySelector('.main-nav a[href*=' + sectionId + ']');
+
+                mobileLink?.classList.add('active');
+                mainLink?.classList.add('active');
             } else {
-                document.querySelector('.mobile-nav a[href*=' + sectionId + ']').classList.remove('active');
-                document.querySelector('.main-nav a[href*=' + sectionId + ']')?.classList.remove('active');
+                const mobileLink = document.querySelector('.mobile-nav a[href*=' + sectionId + ']');
+                const mainLink = document.querySelector('.main-nav a[href*=' + sectionId + ']');
+
+                mobileLink?.classList.remove('active');
+                mainLink?.classList.remove('active');
             }
         });
     }
 
     window.addEventListener('scroll', highlightNavigation);
+    highlightNavigation();
     
     // Add hover effects to cards
     const cards = document.querySelectorAll('.risk-item, .tip-item, .activity-category, .team-member');
