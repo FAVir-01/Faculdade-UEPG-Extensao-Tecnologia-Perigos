@@ -4,8 +4,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const heroAnimationContainer = document.getElementById('heroAnimation');
     const heroContent = document.getElementById('heroContent');
     const heroContainer = document.getElementById('heroContainer');
+    const heroAnimationFallback = document.getElementById('heroAnimationFallback');
     const saibaMaisBtn = document.getElementById('saibaMaisBtn');
     let heroAnimationInstance = null;
+
+    const showHeroFallback = (message) => {
+        if (!heroAnimationFallback) {
+            return;
+        }
+
+        if (message) {
+            const messageElement = heroAnimationFallback.querySelector('p');
+            if (messageElement) {
+                messageElement.textContent = message;
+            }
+        }
+
+        heroAnimationFallback.classList.remove('hidden');
+    };
+
+    const hideHeroFallback = () => {
+        heroAnimationFallback?.classList.add('hidden');
+    };
 
     for (const link of links) {
         link.addEventListener("click", function (e) {
@@ -24,16 +44,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (heroAnimationContainer && window.lottie) {
-        heroAnimationInstance = window.lottie.loadAnimation({
-            container: heroAnimationContainer,
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: 'animation.json',
-            rendererSettings: {
-                preserveAspectRatio: 'xMidYMid meet'
-            }
-        });
+        try {
+            heroAnimationInstance = window.lottie.loadAnimation({
+                container: heroAnimationContainer,
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: '/animation.json',
+                rendererSettings: {
+                    preserveAspectRatio: 'xMidYMid meet'
+                }
+            });
+
+            heroAnimationInstance.addEventListener('DOMLoaded', () => {
+                hideHeroFallback();
+            });
+
+            const handleAnimationError = () => {
+                showHeroFallback('Não foi possível carregar a animação interativa. Veja a representação estática acima.');
+            };
+
+            heroAnimationInstance.addEventListener('data_failed', handleAnimationError);
+            heroAnimationInstance.addEventListener('error', handleAnimationError);
+        } catch (error) {
+            showHeroFallback('Não foi possível carregar a animação interativa. Veja a representação estática acima.');
+        }
+    } else {
+        showHeroFallback();
     }
 
     if (saibaMaisBtn) {
