@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const heroAnimationContainer = document.getElementById('heroAnimation');
     const heroContent = document.getElementById('heroContent');
     const heroContainer = document.getElementById('heroContainer');
-    const heroAnimationImage = document.getElementById('heroAnimationImage');
+    const heroAnimationPlayer = document.getElementById('heroAnimationPlayer');
+    const heroAnimationFallback = document.getElementById('heroAnimationFallback');
     const saibaMaisBtn = document.getElementById('saibaMaisBtn');
 
     for (const link of links) {
@@ -23,7 +24,35 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    heroAnimationImage?.classList.remove('hidden');
+    const showHeroAnimationFallback = () => {
+        heroAnimationPlayer?.classList.add('hidden');
+        heroAnimationFallback?.classList.remove('hidden');
+    };
+
+    if (heroAnimationPlayer) {
+        if (window.lottie) {
+            try {
+                const animation = window.lottie.loadAnimation({
+                    container: heroAnimationPlayer,
+                    renderer: 'svg',
+                    loop: true,
+                    autoplay: true,
+                    path: 'animation.json',
+                    rendererSettings: {
+                        progressiveLoad: true,
+                        hideOnTransparent: true,
+                    },
+                });
+
+                animation.addEventListener('data_failed', showHeroAnimationFallback);
+            } catch (error) {
+                console.error('Falha ao iniciar a animação Lottie:', error);
+                showHeroAnimationFallback();
+            }
+        } else {
+            showHeroAnimationFallback();
+        }
+    }
 
     if (saibaMaisBtn) {
         saibaMaisBtn.addEventListener('click', () => {
