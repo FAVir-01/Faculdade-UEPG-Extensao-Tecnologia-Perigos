@@ -109,11 +109,14 @@
             gap: 32px;
         }
 
-        .hero-container.only-animation {
+        .hero-container.chat-mode {
             justify-content: center;
+            background: var(--teal-tint);
+            border-radius: 24px;
+            padding: 40px 28px;
         }
 
-        .hero-container.only-animation .hero-animation {
+        .hero-container.chat-mode .hero-animation {
             width: 100%;
         }
 
@@ -124,14 +127,17 @@
                 align-items: center;
             }
 
-            .hero-container.only-animation {
+            .hero-container.chat-mode {
                 flex-direction: row;
                 justify-content: center;
+                align-items: center;
+                padding: 48px;
+                gap: 48px;
             }
 
-            .hero-container.only-animation .hero-animation {
-                width: 100%;
-                max-width: 520px;
+            .hero-container.chat-mode .hero-animation {
+                width: auto;
+                max-width: 580px;
             }
 
             .hero-content {
@@ -184,10 +190,12 @@
             align-items: center;
             flex-direction: column;
             gap: 16px;
+            transition: transform 0.6s ease, max-width 0.6s ease;
         }
 
-        .hero-animation.only {
+        .hero-animation.chat-expanded {
             max-width: 520px;
+            transform: scale(1.08);
         }
 
         .hero-lottie,
@@ -203,8 +211,78 @@
             min-height: 280px;
         }
 
-        .hero-animation.only .hero-lottie {
+        .hero-animation.chat-expanded .hero-lottie {
             max-width: 520px;
+        }
+
+        .hero-chat {
+            display: none;
+            flex-direction: column;
+            gap: 18px;
+            width: 100%;
+            max-width: 420px;
+            align-items: flex-start;
+        }
+
+        .hero-chat .chat-bubble {
+            position: relative;
+            background: rgba(0, 181, 191, 0.15);
+            color: var(--teal-dark);
+            padding: 16px 22px;
+            border-radius: 20px;
+            font-weight: 500;
+            box-shadow: 0 16px 28px rgba(0, 131, 138, 0.18);
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .hero-chat .chat-bubble::after {
+            content: '';
+            position: absolute;
+            left: 28px;
+            bottom: -12px;
+            width: 22px;
+            height: 22px;
+            background: inherit;
+            transform: rotate(45deg);
+            border-bottom-right-radius: 6px;
+            box-shadow: 8px 8px 20px rgba(0, 131, 138, 0.12);
+        }
+
+        .hero-container.chat-mode .hero-chat {
+            display: flex;
+        }
+
+        .hero-container.chat-mode .chat-bubble {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-container.chat-mode .chat-bubble:nth-child(2) {
+            transition-delay: 0.1s;
+        }
+
+        .hero-container.chat-mode .chat-bubble:nth-child(3) {
+            transition-delay: 0.2s;
+        }
+
+        @media (min-width: 992px) {
+            .hero-animation.chat-expanded {
+                max-width: 640px;
+                transform: scale(1.15);
+            }
+        }
+
+        @media (max-width: 767px) {
+            .hero-container.chat-mode {
+                padding: 32px 20px;
+                gap: 32px;
+            }
+
+            .hero-chat .chat-bubble::after {
+                left: 20px;
+            }
         }
 
         .hero-animation-fallback {
@@ -738,6 +816,11 @@
                 <h2>"Excesso de telas pode roubar o que a infância tem de melhor."</h2>
                 <p>Bem-vindo à campanha "Cuidado com as Telas", uma iniciativa para conscientizar sobre os riscos do uso excessivo de dispositivos digitais por crianças e oferecer soluções práticas para pais e educadores.</p>
                 <button type="button" class="btn" id="saibaMaisBtn">Saiba mais</button>
+            </div>
+            <div class="hero-chat hidden" id="heroChat" aria-live="polite">
+                <div class="chat-bubble">Vamos fazer uma pausa para descansar os olhos e alongar o corpo?</div>
+                <div class="chat-bubble">Que tal chamar os amigos para brincar lá fora por alguns minutos?</div>
+                <div class="chat-bubble">Equilíbrio é tudo: tecnologia é divertida, mas o mundo offline também!</div>
             </div>
             <div class="hero-animation animate-on-scroll" id="heroAnimation">
                 <div id="heroAnim" class="hero-lottie hidden" data-animation-path="animation.json" role="img" aria-label="Animação ilustrativa da campanha Cuidado com as Telas"></div>
