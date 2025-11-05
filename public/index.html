@@ -9,14 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --red-600: #c5432f;
-            --amber-50: #fff8e1;
-            --amber-100: #ffecb3;
-            --green-600: #4caf50;
-            --green-700: #388e3c;
-            --cream: #f5f5dc;
-            --gray-800: #333333;
-            --beige: #f5e9d0;
+            --teal-500: #00B5BF;
+            --teal-600: #00919A;
+            --teal-700: #00717A;
+            --white: #ffffff;
+            --text-dark: #03363A;
+            --background-light: #f2fbfc;
         }
 
         * {
@@ -27,8 +25,8 @@
 
         body {
             font-family: 'Poppins', Arial, sans-serif;
-            background-color: var(--beige);
-            color: var(--gray-800);
+            background-color: var(--background-light);
+            color: var(--text-dark);
             line-height: 1.6;
         }
 
@@ -44,8 +42,8 @@
 
         /* Header */
         header {
-            background-color: var(--red-600);
-            color: var(--cream);
+            background-color: var(--teal-500);
+            color: var(--white);
             padding: 24px 0;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -59,7 +57,7 @@
 
         /* Navigation */
         nav.main-nav {
-            background-color: #b33d2a;
+            background-color: var(--teal-600);
             padding: 10px 0;
         }
 
@@ -75,7 +73,7 @@
         }
 
         nav.main-nav a {
-            color: var(--cream);
+            color: var(--white);
             text-decoration: none;
             font-weight: 500;
             transition: all 0.3s ease;
@@ -90,7 +88,7 @@
         /* Hero Section */
         .hero {
             padding: 60px 0;
-            background-color: var(--beige);
+            background-color: var(--background-light);
             position: relative;
         }
 
@@ -101,7 +99,7 @@
             left: 0;
             right: 0;
             height: 50px;
-            background: linear-gradient(to bottom right, transparent 49%, white 50%);
+            background: linear-gradient(to bottom right, transparent 49%, var(--white) 50%);
         }
 
         .hero-container {
@@ -130,7 +128,7 @@
             font-size: 2rem;
             margin-bottom: 24px;
             line-height: 1.3;
-            color: var(--red-600);
+            color: var(--teal-600);
         }
 
         .hero-content p {
@@ -140,8 +138,8 @@
 
         .btn {
             display: inline-block;
-            background-color: var(--green-600);
-            color: white;
+            background-color: var(--teal-500);
+            color: var(--white);
             font-weight: 600;
             padding: 12px 24px;
             border-radius: 8px;
@@ -154,7 +152,7 @@
         }
 
         .btn:hover {
-            background-color: var(--green-700);
+            background-color: var(--teal-700);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
@@ -181,7 +179,7 @@
             font-size: 2rem;
             margin-bottom: 40px;
             text-align: center;
-            color: var(--red-600);
+            color: var(--teal-600);
             position: relative;
             padding-bottom: 15px;
         }
@@ -194,16 +192,16 @@
             transform: translateX(-50%);
             width: 80px;
             height: 4px;
-            background-color: var(--green-600);
+            background-color: var(--teal-500);
             border-radius: 2px;
         }
 
         .section-white {
-            background-color: white;
+            background-color: var(--white);
         }
 
         .section-beige {
-            background-color: var(--beige);
+            background-color: var(--background-light);
         }
 
         .section-white::after,
@@ -217,11 +215,11 @@
         }
 
         .section-white::after {
-            background: linear-gradient(to bottom right, white 49%, var(--beige) 50%);
+            background: linear-gradient(to bottom right, var(--white) 49%, var(--background-light) 50%);
         }
 
         .section-beige::after {
-            background: linear-gradient(to bottom right, var(--beige) 49%, white 50%);
+            background: linear-gradient(to bottom right, var(--background-light) 49%, var(--white) 50%);
         }
 
         /* Introduction Section */
@@ -241,7 +239,7 @@
 
         .intro-text {
             flex: 1;
-            background-color: white;
+            background-color: var(--white);
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -281,7 +279,7 @@
             display: flex;
             align-items: flex-start;
             padding: 25px;
-            background-color: white;
+            background-color: var(--white);
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -293,7 +291,7 @@
         }
 
         .risk-icon {
-            color: var(--green-600);
+            color: var(--teal-500);
             margin-right: 15px;
             flex-shrink: 0;
             width: 28px;
@@ -304,7 +302,7 @@
             font-weight: 700;
             font-size: 1.3rem;
             margin-bottom: 12px;
-            color: var(--red-600);
+            color: var(--teal-600);
         }
 
         .risk-content p {
@@ -334,7 +332,7 @@
         }
 
         .tip-item {
-            background-color: white;
+            background-color: var(--white);
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -351,7 +349,7 @@
             font-weight: 700;
             font-size: 1.3rem;
             margin-bottom: 15px;
-            color: var(--green-600);
+            color: var(--teal-600);
         }
 
         .tip-item p {
@@ -379,7 +377,7 @@
         }
 
         .activity-category {
-            background-color: white;
+            background-color: var(--white);
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -394,9 +392,9 @@
             font-weight: 700;
             font-size: 1.3rem;
             margin-bottom: 20px;
-            color: var(--red-600);
+            color: var(--teal-600);
             padding-bottom: 10px;
-            border-bottom: 2px solid var(--green-600);
+            border-bottom: 2px solid var(--teal-500);
         }
 
         .activity-category ul {
@@ -410,7 +408,7 @@
 
         /* About Section */
         .about-content {
-            background-color: white;
+            background-color: var(--white);
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -431,7 +429,7 @@
             font-size: 1.6rem;
             margin-bottom: 25px;
             text-align: center;
-            color: var(--red-600);
+            color: var(--teal-600);
         }
 
         .team-grid {
@@ -448,7 +446,7 @@
 
         .team-member {
             padding: 20px;
-            background-color: white;
+            background-color: var(--white);
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -463,19 +461,19 @@
             font-weight: 700;
             font-size: 1.2rem;
             margin-bottom: 8px;
-            color: var(--red-600);
+            color: var(--teal-600);
         }
 
         .team-member p:last-child {
             font-size: 0.95rem;
-            color: var(--green-600);
+            color: var(--teal-500);
             font-weight: 500;
         }
 
         /* Footer */
         footer {
-            background-color: var(--red-600);
-            color: var(--cream);
+            background-color: var(--teal-600);
+            color: var(--white);
             padding: 40px 0 20px;
         }
 
@@ -534,14 +532,14 @@
         }
 
         .contact-email a {
-            color: var(--cream);
+            color: var(--white);
             text-decoration: none;
             margin-left: 10px;
             transition: color 0.3s;
         }
 
         .contact-email a:hover {
-            color: var(--amber-100);
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: underline;
         }
 
@@ -551,7 +549,7 @@
         }
 
         .social-links a {
-            color: var(--cream);
+            color: var(--white);
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -563,13 +561,13 @@
         }
 
         .social-links a:hover {
-            color: var(--amber-100);
+            color: rgba(255, 255, 255, 0.85);
             background-color: rgba(255, 255, 255, 0.2);
             transform: translateY(-3px);
         }
 
         .footer-bottom {
-            border-top: 1px solid rgba(245, 245, 220, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
             margin-top: 30px;
             padding-top: 20px;
             text-align: center;
@@ -587,8 +585,8 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: var(--red-600);
-            color: var(--cream);
+            background-color: var(--teal-600);
+            color: var(--white);
             padding: 12px 16px;
             z-index: 100;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
@@ -616,7 +614,7 @@
         }
 
         .mobile-nav a {
-            color: var(--cream);
+            color: var(--white);
             text-decoration: none;
             transition: color 0.3s;
             display: flex;
@@ -626,7 +624,7 @@
         }
 
         .mobile-nav a:hover {
-            color: var(--amber-100);
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .mobile-nav .icon {
