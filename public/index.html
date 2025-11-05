@@ -193,26 +193,10 @@
         }
 
         .hero-animation canvas,
-        .hero-animation svg {
+        .hero-animation svg,
+        .hero-animation img {
             width: 100% !important;
             height: auto !important;
-        }
-
-        .hero-animation-fallback {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 12px;
-            color: var(--teal-dark);
-        }
-
-        .hero-animation-fallback img {
-            width: 100%;
-            max-width: 360px;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
         }
 
         .hidden {
@@ -741,10 +725,7 @@
                 <button type="button" class="btn" id="saibaMaisBtn">Saiba mais</button>
             </div>
             <div class="hero-animation animate-on-scroll" id="heroAnimation">
-                <div class="hero-animation-fallback hidden" id="heroAnimationFallback" aria-live="polite">
-                    <img src="/animation.gif" alt="Ilustração estática da campanha Cuidado com as Telas" loading="lazy">
-                    <p>Seu navegador não suporta a animação interativa. Veja a representação estática acima.</p>
-                </div>
+                <img id="heroAnimationImage" src="/animation.gif" alt="Animação ilustrativa da campanha Cuidado com as Telas" loading="lazy">
             </div>
         </div>
     </section>
@@ -1147,7 +1128,6 @@
         </ul>
     </nav>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" integrity="sha512-+5pz50jdK5Zk90un0nLBKBPXn1HMa0ZvwpOxQF2BdOk9WUt7u1ONlT4ZLhcdX7Bp+bImnHS7BQyZpXcnY08TpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="script.js"></script>
 </body>
 </html>
