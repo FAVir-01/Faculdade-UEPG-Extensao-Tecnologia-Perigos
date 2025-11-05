@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const heroAnimationContainer = document.getElementById('heroAnimation');
     const heroContent = document.getElementById('heroContent');
     const heroContainer = document.getElementById('heroContainer');
-    const heroAnimationPlayer = document.getElementById('heroAnimationPlayer');
+    const heroAnim = document.getElementById('heroAnim');
     const heroAnimationFallback = document.getElementById('heroAnimationFallback');
     const saibaMaisBtn = document.getElementById('saibaMaisBtn');
 
@@ -25,19 +25,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const showHeroAnimationFallback = () => {
-        heroAnimationPlayer?.classList.add('hidden');
+        heroAnim?.classList.add('hidden');
         heroAnimationFallback?.classList.remove('hidden');
     };
 
-    if (heroAnimationPlayer) {
-        if (window.lottie) {
+    if (heroAnim) {
+        const animationPath = heroAnim.dataset.animationPath?.trim() || 'animation.json';
+
+        const initialiseHeroAnimation = () => {
+            if (!window.lottie) {
+                showHeroAnimationFallback();
+                return;
+            }
+
             try {
+                heroAnim.classList.remove('hidden');
+                heroAnimationFallback?.classList.add('hidden');
+
                 const animation = window.lottie.loadAnimation({
-                    container: heroAnimationPlayer,
+                    container: heroAnim,
                     renderer: 'svg',
                     loop: true,
                     autoplay: true,
-                    path: 'animation.json',
+                    path: animationPath,
                     rendererSettings: {
                         progressiveLoad: true,
                         hideOnTransparent: true,
@@ -45,13 +55,40 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 animation.addEventListener('data_failed', showHeroAnimationFallback);
+                animation.addEventListener('error', showHeroAnimationFallback);
+                animation.addEventListener('DOMLoaded', () => {
+                    heroAnim.classList.remove('hidden');
+                    heroAnimationFallback?.classList.add('hidden');
+                });
+
+                if ('IntersectionObserver' in window) {
+                    const observer = new IntersectionObserver((entries) => {
+                        const [entry] = entries;
+
+                        if (!entry) {
+                            return;
+                        }
+
+                        if (entry.isIntersecting) {
+                            animation.play();
+                        } else {
+                            animation.pause();
+                        }
+                    }, { threshold: 0.25 });
+
+                    observer.observe(heroAnim);
+
+                    animation.addEventListener('destroy', () => {
+                        observer.disconnect();
+                    });
+                }
             } catch (error) {
                 console.error('Falha ao iniciar a animação Lottie:', error);
                 showHeroAnimationFallback();
             }
-        } else {
-            showHeroAnimationFallback();
-        }
+        };
+
+        initialiseHeroAnimation();
     }
 
     if (saibaMaisBtn) {
