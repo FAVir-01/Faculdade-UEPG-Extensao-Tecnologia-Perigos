@@ -1,5 +1,4 @@
-// Smooth scrolling for anchor links
-document.addEventListener("DOMContentLoaded", () => {
+const initialisePage = () => {
     const links = document.querySelectorAll('a[href^="#"]');
     const heroAnimationContainer = document.getElementById('heroAnimation');
     const heroContent = document.getElementById('heroContent');
@@ -29,8 +28,15 @@ document.addEventListener("DOMContentLoaded", () => {
         heroAnimationFallback?.classList.remove('hidden');
     };
 
+    const hideHeroAnimationFallback = () => {
+        heroAnim?.classList.remove('hidden');
+        heroAnimationFallback?.classList.add('hidden');
+    };
+
     if (heroAnim) {
         const animationPath = heroAnim.dataset.animationPath?.trim() || 'animation.json';
+
+        showHeroAnimationFallback();
 
         const initialiseHeroAnimation = () => {
             if (!window.lottie) {
@@ -39,9 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             try {
-                heroAnim.classList.remove('hidden');
-                heroAnimationFallback?.classList.add('hidden');
-
                 const animation = window.lottie.loadAnimation({
                     container: heroAnim,
                     renderer: 'svg',
@@ -56,10 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 animation.addEventListener('data_failed', showHeroAnimationFallback);
                 animation.addEventListener('error', showHeroAnimationFallback);
-                animation.addEventListener('DOMLoaded', () => {
-                    heroAnim.classList.remove('hidden');
-                    heroAnimationFallback?.classList.add('hidden');
-                });
+                animation.addEventListener('DOMLoaded', hideHeroAnimationFallback);
 
                 if ('IntersectionObserver' in window) {
                     const observer = new IntersectionObserver((entries) => {
@@ -167,4 +167,10 @@ document.addEventListener("DOMContentLoaded", () => {
             card.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
         });
     });
-});
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialisePage, { once: true });
+} else {
+    initialisePage();
+}
