@@ -5,6 +5,7 @@ const initialisePage = () => {
     const heroContainer = document.getElementById('heroContainer');
     const heroAnim = document.getElementById('heroAnim');
     const heroAnimationFallback = document.getElementById('heroAnimationFallback');
+    const heroChat = document.getElementById('heroChat');
     const saibaMaisBtn = document.getElementById('saibaMaisBtn');
 
     for (const link of links) {
@@ -97,11 +98,15 @@ const initialisePage = () => {
                 heroContent.classList.add('hidden');
             }
 
-            if (heroContainer) {
-                heroContainer.classList.add('only-animation');
+            if (heroChat) {
+                heroChat.classList.remove('hidden');
             }
 
-            heroAnimationContainer?.classList.add('only');
+            if (heroContainer) {
+                heroContainer.classList.add('chat-mode');
+            }
+
+            heroAnimationContainer?.classList.add('chat-expanded');
         });
     }
 
