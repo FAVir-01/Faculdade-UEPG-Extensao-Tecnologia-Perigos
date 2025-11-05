@@ -198,6 +198,23 @@
             height: auto !important;
         }
 
+        .hero-animation-fallback {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            color: var(--teal-dark);
+        }
+
+        .hero-animation-fallback img {
+            width: 100%;
+            max-width: 360px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+        }
+
         .hidden {
             display: none !important;
         }
@@ -723,7 +740,12 @@
                 <p>Bem-vindo à campanha "Cuidado com as Telas", uma iniciativa para conscientizar sobre os riscos do uso excessivo de dispositivos digitais por crianças e oferecer soluções práticas para pais e educadores.</p>
                 <button type="button" class="btn" id="saibaMaisBtn">Saiba mais</button>
             </div>
-            <div class="hero-animation animate-on-scroll" id="heroAnimation"></div>
+            <div class="hero-animation animate-on-scroll" id="heroAnimation">
+                <div class="hero-animation-fallback hidden" id="heroAnimationFallback" aria-live="polite">
+                    <img src="/animation.gif" alt="Ilustração estática da campanha Cuidado com as Telas" loading="lazy">
+                    <p>Seu navegador não suporta a animação interativa. Veja a representação estática acima.</p>
+                </div>
+            </div>
         </div>
     </section>
 
