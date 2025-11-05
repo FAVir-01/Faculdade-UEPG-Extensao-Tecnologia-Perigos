@@ -1,6 +1,11 @@
 // Smooth scrolling for anchor links
 document.addEventListener("DOMContentLoaded", () => {
     const links = document.querySelectorAll('a[href^="#"]');
+    const heroAnimationContainer = document.getElementById('heroAnimation');
+    const heroContent = document.getElementById('heroContent');
+    const heroContainer = document.getElementById('heroContainer');
+    const saibaMaisBtn = document.getElementById('saibaMaisBtn');
+    let heroAnimationInstance = null;
 
     for (const link of links) {
         link.addEventListener("click", function (e) {
@@ -15,6 +20,37 @@ document.addEventListener("DOMContentLoaded", () => {
                     behavior: "smooth",
                 });
             }
+        });
+    }
+
+    if (heroAnimationContainer && window.lottie) {
+        heroAnimationInstance = window.lottie.loadAnimation({
+            container: heroAnimationContainer,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'animation.json',
+            rendererSettings: {
+                preserveAspectRatio: 'xMidYMid meet'
+            }
+        });
+    }
+
+    if (saibaMaisBtn) {
+        saibaMaisBtn.addEventListener('click', () => {
+            if (heroContent) {
+                heroContent.classList.add('hidden');
+            }
+
+            if (heroContainer) {
+                heroContainer.classList.add('only-animation');
+            }
+
+            if (heroAnimationContainer) {
+                heroAnimationContainer.classList.add('only');
+            }
+
+            heroAnimationInstance?.play();
         });
     }
 
