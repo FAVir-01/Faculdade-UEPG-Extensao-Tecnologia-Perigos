@@ -66,18 +66,26 @@ document.addEventListener("DOMContentLoaded", () => {
             const sectionHeight = current.offsetHeight;
             const sectionTop = current.offsetTop - 100;
             const sectionId = current.getAttribute('id');
-            
+
+            if (!sectionId) {
+                return;
+            }
+
+            const mobileNavLink = document.querySelector(`.mobile-nav a[href*="${sectionId}"]`);
+            const mainNavLink = document.querySelector(`.main-nav a[href*="${sectionId}"]`);
+
             if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                document.querySelector('.mobile-nav a[href*=' + sectionId + ']').classList.add('active');
-                document.querySelector('.main-nav a[href*=' + sectionId + ']')?.classList.add('active');
+                mobileNavLink?.classList.add('active');
+                mainNavLink?.classList.add('active');
             } else {
-                document.querySelector('.mobile-nav a[href*=' + sectionId + ']').classList.remove('active');
-                document.querySelector('.main-nav a[href*=' + sectionId + ']')?.classList.remove('active');
+                mobileNavLink?.classList.remove('active');
+                mainNavLink?.classList.remove('active');
             }
         });
     }
 
     window.addEventListener('scroll', highlightNavigation);
+    highlightNavigation();
     
     // Add hover effects to cards
     const cards = document.querySelectorAll('.risk-item, .tip-item, .activity-category, .team-member');
