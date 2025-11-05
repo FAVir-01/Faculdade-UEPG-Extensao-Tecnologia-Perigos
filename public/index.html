@@ -186,17 +186,36 @@
             border-radius: 12px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             padding: 16px;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .hero-animation.only {
             max-width: 520px;
         }
 
+        .hero-lottie,
         .hero-animation canvas,
         .hero-animation svg,
         .hero-animation img {
             width: 100% !important;
             height: auto !important;
+            max-width: 100%;
+        }
+
+        .hero-lottie {
+            min-height: 280px;
+        }
+
+        .hero-animation.only .hero-lottie {
+            max-width: 520px;
+        }
+
+        .hero-animation-fallback {
+            width: 100%;
+            text-align: center;
+            color: var(--teal-dark);
+            font-weight: 500;
         }
 
         .hidden {
@@ -725,7 +744,8 @@
                 <button type="button" class="btn" id="saibaMaisBtn">Saiba mais</button>
             </div>
             <div class="hero-animation animate-on-scroll" id="heroAnimation">
-                <img id="heroAnimationImage" src="animation.gif" alt="Animação ilustrativa da campanha Cuidado com as Telas" loading="lazy">
+                <div id="heroAnim" class="hero-lottie hidden" data-animation-path="animation.json" role="img" aria-label="Animação ilustrativa da campanha Cuidado com as Telas"></div>
+                <p id="heroAnimationFallback" class="hero-animation-fallback">Animação ilustrativa temporariamente indisponível.</p>
             </div>
         </div>
     </section>
@@ -1128,6 +1148,7 @@
         </ul>
     </nav>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" integrity="sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="script.js"></script>
 </body>
 </html>
