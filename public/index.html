@@ -9,12 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --teal-500: #00B5BF;
-            --teal-600: #00919A;
-            --teal-700: #00717A;
+            --teal-primary: #00B5BF;
+            --teal-dark: #00838A;
+            --teal-deep: #00656A;
             --white: #ffffff;
-            --text-dark: #03363A;
-            --background-light: #f2fbfc;
+            --text-dark: #01363A;
+            --teal-tint: rgba(0, 181, 191, 0.08);
         }
 
         * {
@@ -25,7 +25,7 @@
 
         body {
             font-family: 'Poppins', Arial, sans-serif;
-            background-color: var(--background-light);
+            background-color: var(--white);
             color: var(--text-dark);
             line-height: 1.6;
         }
@@ -42,7 +42,7 @@
 
         /* Header */
         header {
-            background-color: var(--teal-500);
+            background-color: var(--teal-primary);
             color: var(--white);
             padding: 24px 0;
             text-align: center;
@@ -57,7 +57,7 @@
 
         /* Navigation */
         nav.main-nav {
-            background-color: var(--teal-600);
+            background-color: var(--teal-dark);
             padding: 10px 0;
         }
 
@@ -88,7 +88,7 @@
         /* Hero Section */
         .hero {
             padding: 60px 0;
-            background-color: var(--background-light);
+            background-color: var(--teal-tint);
             position: relative;
         }
 
@@ -99,13 +99,22 @@
             left: 0;
             right: 0;
             height: 50px;
-            background: linear-gradient(to bottom right, transparent 49%, var(--white) 50%);
+            background: linear-gradient(to bottom right, transparent 49%, rgba(0, 181, 191, 0.2) 50%);
         }
 
         .hero-container {
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 32px;
+        }
+
+        .hero-container.only-animation {
+            justify-content: center;
+        }
+
+        .hero-container.only-animation .hero-animation {
+            width: 100%;
         }
 
         @media (min-width: 768px) {
@@ -115,11 +124,21 @@
                 align-items: center;
             }
 
+            .hero-container.only-animation {
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            .hero-container.only-animation .hero-animation {
+                width: 100%;
+                max-width: 520px;
+            }
+
             .hero-content {
                 width: 48%;
             }
 
-            .hero-image {
+            .hero-animation {
                 width: 48%;
             }
         }
@@ -128,7 +147,7 @@
             font-size: 2rem;
             margin-bottom: 24px;
             line-height: 1.3;
-            color: var(--teal-600);
+            color: var(--teal-dark);
         }
 
         .hero-content p {
@@ -138,7 +157,7 @@
 
         .btn {
             display: inline-block;
-            background-color: var(--teal-500);
+            background-color: var(--teal-primary);
             color: var(--white);
             font-weight: 600;
             padding: 12px 24px;
@@ -152,21 +171,35 @@
         }
 
         .btn:hover {
-            background-color: var(--teal-700);
+            background-color: var(--teal-deep);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .hero-image img {
-            max-width: 100%;
-            height: auto;
+        .hero-animation {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--white);
             border-radius: 12px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s ease;
+            padding: 16px;
         }
 
-        .hero-image img:hover {
-            transform: scale(1.02);
+        .hero-animation.only {
+            max-width: 520px;
+        }
+
+        .hero-animation canvas,
+        .hero-animation svg {
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         /* Sections */
@@ -179,7 +212,7 @@
             font-size: 2rem;
             margin-bottom: 40px;
             text-align: center;
-            color: var(--teal-600);
+            color: var(--teal-dark);
             position: relative;
             padding-bottom: 15px;
         }
@@ -192,7 +225,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 4px;
-            background-color: var(--teal-500);
+            background-color: var(--teal-primary);
             border-radius: 2px;
         }
 
@@ -200,12 +233,12 @@
             background-color: var(--white);
         }
 
-        .section-beige {
-            background-color: var(--background-light);
+        .section-teal-tint {
+            background-color: var(--teal-tint);
         }
 
         .section-white::after,
-        .section-beige::after {
+        .section-teal-tint::after {
             content: '';
             position: absolute;
             bottom: 0;
@@ -215,11 +248,11 @@
         }
 
         .section-white::after {
-            background: linear-gradient(to bottom right, var(--white) 49%, var(--background-light) 50%);
+            background: linear-gradient(to bottom right, var(--white) 49%, rgba(0, 181, 191, 0.15) 50%);
         }
 
-        .section-beige::after {
-            background: linear-gradient(to bottom right, var(--background-light) 49%, var(--white) 50%);
+        .section-teal-tint::after {
+            background: linear-gradient(to bottom right, rgba(0, 181, 191, 0.15) 49%, var(--white) 50%);
         }
 
         /* Introduction Section */
@@ -291,7 +324,7 @@
         }
 
         .risk-icon {
-            color: var(--teal-500);
+            color: var(--teal-primary);
             margin-right: 15px;
             flex-shrink: 0;
             width: 28px;
@@ -302,7 +335,7 @@
             font-weight: 700;
             font-size: 1.3rem;
             margin-bottom: 12px;
-            color: var(--teal-600);
+            color: var(--teal-dark);
         }
 
         .risk-content p {
@@ -349,7 +382,7 @@
             font-weight: 700;
             font-size: 1.3rem;
             margin-bottom: 15px;
-            color: var(--teal-600);
+            color: var(--teal-dark);
         }
 
         .tip-item p {
@@ -392,9 +425,9 @@
             font-weight: 700;
             font-size: 1.3rem;
             margin-bottom: 20px;
-            color: var(--teal-600);
+            color: var(--teal-dark);
             padding-bottom: 10px;
-            border-bottom: 2px solid var(--teal-500);
+            border-bottom: 2px solid var(--teal-primary);
         }
 
         .activity-category ul {
@@ -429,7 +462,7 @@
             font-size: 1.6rem;
             margin-bottom: 25px;
             text-align: center;
-            color: var(--teal-600);
+            color: var(--teal-dark);
         }
 
         .team-grid {
@@ -461,18 +494,18 @@
             font-weight: 700;
             font-size: 1.2rem;
             margin-bottom: 8px;
-            color: var(--teal-600);
+            color: var(--teal-dark);
         }
 
         .team-member p:last-child {
             font-size: 0.95rem;
-            color: var(--teal-500);
+            color: var(--teal-primary);
             font-weight: 500;
         }
 
         /* Footer */
         footer {
-            background-color: var(--teal-600);
+            background-color: var(--teal-dark);
             color: var(--white);
             padding: 40px 0 20px;
         }
@@ -585,7 +618,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            background-color: var(--teal-600);
+            background-color: var(--teal-dark);
             color: var(--white);
             padding: 12px 16px;
             z-index: 100;
@@ -684,15 +717,13 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="container hero-container">
-            <div class="hero-content animate-on-scroll">
+        <div class="container hero-container" id="heroContainer">
+            <div class="hero-content animate-on-scroll" id="heroContent">
                 <h2>"Excesso de telas pode roubar o que a infância tem de melhor."</h2>
                 <p>Bem-vindo à campanha "Cuidado com as Telas", uma iniciativa para conscientizar sobre os riscos do uso excessivo de dispositivos digitais por crianças e oferecer soluções práticas para pais e educadores.</p>
-                <a href="#introducao" class="btn">Saiba mais</a>
+                <button type="button" class="btn" id="saibaMaisBtn">Saiba mais</button>
             </div>
-            <div class="hero-image animate-on-scroll">
-                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%2014%20de%20abr.%20de%202025%2C%2013_18_49-nwOeRKFqw06JSNpzzbyhAMLe8SYy1x.png" alt="Panfleto da campanha Cuidado com as Telas">
-            </div>
+            <div class="hero-animation animate-on-scroll" id="heroAnimation"></div>
         </div>
     </section>
 
@@ -715,7 +746,7 @@
     </section>
 
     <!-- Risks Section -->
-    <section id="riscos" class="section-beige">
+    <section id="riscos" class="section-teal-tint">
         <div class="container">
             <h2>Os riscos do uso excessivo de telas</h2>
 
@@ -900,7 +931,7 @@
     </section>
 
     <!-- Activities Section -->
-    <section id="atividades" class="section-beige">
+    <section id="atividades" class="section-teal-tint">
         <div class="container">
             <h2>Atividades alternativas às telas</h2>
 
@@ -1094,6 +1125,7 @@
         </ul>
     </nav>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" integrity="sha512-+5pz50jdK5Zk90un0nLBKBPXn1HMa0ZvwpOxQF2BdOk9WUt7u1ONlT4ZLhcdX7Bp+bImnHS7BQyZpXcnY08TpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="script.js"></script>
 </body>
 </html>
