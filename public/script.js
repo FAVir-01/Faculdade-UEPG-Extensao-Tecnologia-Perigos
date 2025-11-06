@@ -28,37 +28,47 @@ const initialisePage = () => {
         }
     };
 
-    const normalisePath = (rawPath, fallback) => {
-        if (typeof rawPath !== 'string') {
-            return fallback;
+    const toAbsoluteUrl = (path) => {
+        if (typeof path !== 'string') {
+            return null;
         }
 
-        const trimmedValue = rawPath.trim();
+        const trimmedValue = path.trim();
 
         if (!trimmedValue) {
-            return fallback;
+            return null;
         }
 
         try {
             return new URL(trimmedValue, window.location.href).href;
         } catch (error) {
             console.error('Caminho inválido para a animação:', trimmedValue, error);
-            return fallback;
+            return null;
         }
     };
 
-    const getAttributeValue = (element, attribute, fallback) => {
-        if (!element) {
+    const normalisePath = (rawPath, fallbackPath) => {
+        const fallback = toAbsoluteUrl(fallbackPath);
+
+        if (typeof rawPath !== 'string') {
             return fallback;
+        }
+
+        return toAbsoluteUrl(rawPath) ?? fallback;
+    };
+
+    const getAnimationPath = (element, attribute, fallbackPath) => {
+        if (!element) {
+            return normalisePath(null, fallbackPath);
         }
 
         const value = element.getAttribute(attribute);
 
-        return normalisePath(value, fallback);
+        return normalisePath(value, fallbackPath);
     };
 
-    const defaultAnimationPath = getAttributeValue(heroAnim, 'data-animation-path', new URL('./animation.json', window.location.href).href);
-    const neutralAnimationPath = getAttributeValue(heroAnim, 'data-neutral-animation-path', new URL('./animationNeutral.json', window.location.href).href);
+    const defaultAnimationPath = getAnimationPath(heroAnim, 'data-animation-path', './animation.json');
+    const neutralAnimationPath = getAnimationPath(heroAnim, 'data-neutral-animation-path', './animationNeutral.json');
 
     let heroAnimationInstance = null;
 
@@ -81,11 +91,15 @@ const initialisePage = () => {
 
         const animationPath = normalisePath(targetPath, defaultAnimationPath);
 
-    const defaultAnimationPath = sanitisePath(getDatasetValue(heroAnim, 'data-animation-path'), './animation.json');
-    const neutralAnimationPath = sanitisePath(getDatasetValue(heroAnim, 'data-neutral-animation-path'), './animationNeutral.json');
+        if (!animationPath) {
+            console.error('Não foi possível determinar o caminho da animação.');
+            showHeroAnimationFallback();
+            return;
+        }
 
         if (!window.lottie || typeof window.lottie.loadAnimation !== 'function') {
             console.error('Lottie não está disponível para carregar a animação.');
+            showHeroAnimationFallback();
             return;
         }
 
@@ -106,6 +120,11 @@ const initialisePage = () => {
 
             const handleReady = () => {
                 showHeroAnimation();
+
+                if (heroAnimationInstance) {
+                    heroAnimationInstance.removeEventListener('data_ready', handleReady);
+                    heroAnimationInstance.removeEventListener('DOMLoaded', handleReady);
+                }
             };
 
             heroAnimationInstance.addEventListener('data_ready', handleReady);
