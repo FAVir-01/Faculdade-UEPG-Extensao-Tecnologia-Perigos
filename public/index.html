@@ -12,7 +12,7 @@
             --teal-primary: #00B5BF;
             --teal-dark: #00838A;
             --teal-deep: #00656A;
-            --white: #ffffff;
+            --white: #fcfcfc;
             --text-dark: #01363A;
             --teal-tint: rgba(0, 181, 191, 0.08);
         }
@@ -111,9 +111,11 @@
 
         .hero-container.chat-mode {
             justify-content: center;
-            background: var(--teal-tint);
+            background: var(--white);
             border-radius: 24px;
             padding: 40px 28px;
+            border: 1px solid rgba(0, 181, 191, 0.15);
+            box-shadow: 0 24px 48px rgba(1, 54, 58, 0.12);
         }
 
         .hero-container.chat-mode .hero-animation {
@@ -221,20 +223,21 @@
             gap: 18px;
             width: 100%;
             max-width: 420px;
-            align-items: flex-start;
         }
 
         .hero-chat .chat-bubble {
             position: relative;
-            background: rgba(0, 181, 191, 0.15);
-            color: var(--teal-dark);
+            background: var(--teal-primary);
+            color: var(--white);
             padding: 16px 22px;
             border-radius: 20px;
             font-weight: 500;
-            box-shadow: 0 16px 28px rgba(0, 131, 138, 0.18);
+            box-shadow: 0 16px 28px rgba(0, 131, 138, 0.24);
             opacity: 0;
             transform: translateY(12px);
             transition: opacity 0.4s ease, transform 0.4s ease;
+            max-width: 92%;
+            align-self: flex-start;
         }
 
         .hero-chat .chat-bubble::after {
@@ -242,12 +245,27 @@
             position: absolute;
             left: 28px;
             bottom: -12px;
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             background: inherit;
             transform: rotate(45deg);
             border-bottom-right-radius: 6px;
-            box-shadow: 8px 8px 20px rgba(0, 131, 138, 0.12);
+            box-shadow: 6px 6px 18px rgba(0, 131, 138, 0.18);
+        }
+
+        .hero-chat .chat-bubble:nth-child(even) {
+            align-self: flex-end;
+            background: var(--white);
+            color: var(--teal-dark);
+            box-shadow: 0 16px 28px rgba(1, 54, 58, 0.12);
+        }
+
+        .hero-chat .chat-bubble:nth-child(even)::after {
+            left: auto;
+            right: 28px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 6px;
+            box-shadow: -6px 6px 18px rgba(1, 54, 58, 0.12);
         }
 
         .hero-container.chat-mode .hero-chat {
@@ -282,6 +300,11 @@
 
             .hero-chat .chat-bubble::after {
                 left: 20px;
+            }
+
+            .hero-chat .chat-bubble:nth-child(even)::after {
+                left: auto;
+                right: 20px;
             }
         }
 
