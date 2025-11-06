@@ -45,37 +45,32 @@ const initialisePage = () => {
         }
     };
 
-    const resolveAnimationPath = (rawPath) => {
-        const defaultPath = 'animation.json';
-
+    const sanitisePath = (rawPath, fallback) => {
         if (typeof rawPath !== 'string') {
-            return defaultPath;
+            return fallback;
         }
 
-        const sanitisedPath = rawPath.trim();
+        const trimmedValue = rawPath.trim();
 
-        return sanitisedPath || defaultPath;
+        return trimmedValue || fallback;
     };
 
+    const defaultAnimationPath = sanitisePath(heroAnim?.dataset?.animationPath, 'animation.json');
+    const neutralAnimationPath = sanitisePath(heroAnim?.dataset?.neutralAnimationPath, 'animationNeutral.json');
+
     let heroAnimationInstance = null;
+    let currentAnimationPath = defaultAnimationPath;
 
     const loadHeroAnimation = (pathOverride) => {
         if (!heroAnim) {
             return;
         }
 
-        const overridePath = typeof pathOverride === 'string' ? pathOverride.trim() : '';
+        const animationPath = sanitisePath(pathOverride, currentAnimationPath);
+        currentAnimationPath = animationPath;
 
-        if (overridePath) {
-            heroAnim.dataset.animationPath = overridePath;
-        }
-
-        const rawAnimationPath = overridePath || heroAnim.dataset.animationPath;
-        const animationPath = resolveAnimationPath(rawAnimationPath);
-
-        if (!trimmedPath) {
-            return defaultPath;
-        }
+        return sanitisedPath || defaultPath;
+    };
 
         if (!window.lottie) {
             showHeroAnimationFallback();
@@ -163,7 +158,7 @@ const initialisePage = () => {
 
             heroAnimationContainer?.classList.add('chat-expanded');
 
-            loadHeroAnimation(heroAnim?.dataset?.neutralAnimationPath || 'animationNeutral.json');
+            loadHeroAnimation(neutralAnimationPath);
         });
     }
 
