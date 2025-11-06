@@ -62,7 +62,8 @@ const initialisePage = () => {
         const animationPath = sanitisePath(pathOverride, currentAnimationPath);
         currentAnimationPath = animationPath;
 
-        showHeroAnimationFallback();
+    const defaultAnimationPath = sanitisePath(heroAnim?.dataset?.animationPath, 'animation.json');
+    const neutralAnimationPath = sanitisePath(heroAnim?.dataset?.neutralAnimationPath, 'animationNeutral.json');
 
         if (!window.lottie) {
             return;
