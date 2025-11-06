@@ -73,7 +73,9 @@ const initialisePage = () => {
         const rawAnimationPath = overridePath || heroAnim.dataset.animationPath;
         const animationPath = resolveAnimationPath(rawAnimationPath);
 
-        showHeroAnimationFallback();
+        if (!trimmedPath) {
+            return defaultPath;
+        }
 
         if (!window.lottie) {
             showHeroAnimationFallback();
