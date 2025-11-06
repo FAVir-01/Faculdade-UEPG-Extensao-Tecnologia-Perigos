@@ -113,6 +113,9 @@ const initialisePage = () => {
             return;
         }
 
+        // Exibe a imagem estática enquanto a animação é carregada.
+        showHeroAnimationFallback();
+
         const animationPath = normalisePath(targetPath, defaultAnimationPath);
 
         if (!animationPath) {
