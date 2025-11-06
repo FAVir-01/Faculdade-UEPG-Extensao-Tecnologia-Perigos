@@ -106,34 +106,48 @@ const initialisePage = () => {
         }
     };
 
-    const loadHeroAnimation = async (targetPath) => {
+    const loadHeroAnimation = async (targetPath, options = {}) => {
+        const { preserveCurrentAnimation = false } = options;
         const requestId = ++currentAnimationRequestId;
 
         if (!heroAnim) {
             return;
         }
 
-        // Exibe a imagem estática enquanto a animação é carregada.
-        showHeroAnimationFallback();
+        // Exibe a imagem estática enquanto a animação é carregada,
+        // exceto quando queremos manter a animação atual como fallback.
+        if (!(preserveCurrentAnimation && heroAnimationInstance)) {
+            showHeroAnimationFallback();
+        } else {
+            showHeroAnimation();
+        }
 
         const animationPath = normalisePath(targetPath, defaultAnimationPath);
 
         if (!animationPath) {
             console.error('Não foi possível determinar o caminho da animação.');
-            showHeroAnimationFallback();
+            if (!(preserveCurrentAnimation && heroAnimationInstance)) {
+                showHeroAnimationFallback();
+            }
             return;
         }
 
         if (!window.lottie || typeof window.lottie.loadAnimation !== 'function') {
             console.error('Lottie não está disponível para carregar a animação.');
-            showHeroAnimationFallback();
+            if (!(preserveCurrentAnimation && heroAnimationInstance)) {
+                showHeroAnimationFallback();
+            }
             return;
         }
 
         const animationData = await fetchAnimationData(animationPath);
 
         if (!animationData) {
-            showHeroAnimationFallback();
+            if (!(preserveCurrentAnimation && heroAnimationInstance)) {
+                showHeroAnimationFallback();
+            } else {
+                showHeroAnimation();
+            }
             return;
         }
 
@@ -208,7 +222,7 @@ const initialisePage = () => {
                 heroAnimationContainer.classList.add('chat-expanded');
             }
 
-            loadHeroAnimation(neutralAnimationPath);
+            loadHeroAnimation(neutralAnimationPath, { preserveCurrentAnimation: true });
         });
     }
 
