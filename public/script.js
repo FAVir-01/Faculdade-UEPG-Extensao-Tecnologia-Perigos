@@ -81,7 +81,8 @@ const initialisePage = () => {
 
         const animationPath = normalisePath(targetPath, defaultAnimationPath);
 
-        showHeroAnimationFallback();
+    const defaultAnimationPath = sanitisePath(getDatasetValue(heroAnim, 'data-animation-path'), './animation.json');
+    const neutralAnimationPath = sanitisePath(getDatasetValue(heroAnim, 'data-neutral-animation-path'), './animationNeutral.json');
 
         if (!window.lottie || typeof window.lottie.loadAnimation !== 'function') {
             console.error('Lottie não está disponível para carregar a animação.');
