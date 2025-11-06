@@ -69,7 +69,8 @@ const initialisePage = () => {
         const animationPath = sanitisePath(pathOverride, currentAnimationPath);
         currentAnimationPath = animationPath;
 
-        showHeroAnimationFallback();
+        return sanitisedPath || defaultPath;
+    };
 
         if (!window.lottie) {
             showHeroAnimationFallback();
