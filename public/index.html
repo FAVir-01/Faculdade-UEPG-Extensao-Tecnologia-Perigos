@@ -310,9 +310,19 @@
 
         .hero-animation-fallback {
             width: 100%;
-            text-align: center;
-            color: var(--teal-dark);
-            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 0;
+        }
+
+        .hero-animation-fallback img {
+            width: 100%;
+            max-width: 360px;
+            height: auto;
+            display: block;
+            border-radius: 16px;
+            box-shadow: 0 16px 32px rgba(0, 131, 138, 0.18);
         }
 
         .hidden {
@@ -847,7 +857,9 @@
             </div>
             <div class="hero-animation animate-on-scroll" id="heroAnimation">
                 <div id="heroAnim" class="hero-lottie hidden" data-animation-path="/animation.json" role="img" aria-label="Animação ilustrativa da campanha Cuidado com as Telas"></div>
-                <p id="heroAnimationFallback" class="hero-animation-fallback">Animação ilustrativa temporariamente indisponível.</p>
+                <div id="heroAnimationFallback" class="hero-animation-fallback">
+                    <img src="/imagemRobo.png" alt="Ilustração de um robô representando a campanha Cuidado com as Telas" loading="lazy">
+                </div>
             </div>
         </div>
     </section>
