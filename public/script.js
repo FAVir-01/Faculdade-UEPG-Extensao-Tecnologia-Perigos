@@ -48,17 +48,13 @@ const initialisePage = () => {
     const resolveAnimationPath = (rawPath) => {
         const defaultPath = 'animation.json';
 
-        if (!rawPath) {
+        if (typeof rawPath !== 'string') {
             return defaultPath;
         }
 
-        const trimmedPath = rawPath.trim();
+        const sanitisedPath = rawPath.trim();
 
-        if (!trimmedPath) {
-            return defaultPath;
-        }
-
-        return trimmedPath;
+        return sanitisedPath || defaultPath;
     };
 
     let heroAnimationInstance = null;
