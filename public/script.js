@@ -38,7 +38,7 @@ const initialisePage = () => {
         const rawAnimationPath = heroAnim.dataset.animationPath?.trim();
         const animationPath = (() => {
             if (!rawAnimationPath) {
-                return '/Movimento1Robo.json';
+                return '/animation.json';
             }
 
             if (rawAnimationPath.startsWith('http://') || rawAnimationPath.startsWith('https://') || rawAnimationPath.startsWith('/')) {
