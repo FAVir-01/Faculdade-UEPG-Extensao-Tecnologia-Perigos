@@ -35,7 +35,7 @@ const initialisePage = () => {
     };
 
     const normaliseAnimationPath = (rawPath) => {
-        const defaultPath = '/animation.json';
+        const defaultPath = 'animation.json';
 
         if (!rawPath) {
             return defaultPath;
@@ -47,12 +47,7 @@ const initialisePage = () => {
             return defaultPath;
         }
 
-        if (trimmedPath.startsWith('http://') || trimmedPath.startsWith('https://') || trimmedPath.startsWith('/')) {
-            return trimmedPath;
-        }
-
-        const normalisedPath = trimmedPath.replace(/^\.\/?/, '');
-        return `/${normalisedPath}`;
+        return trimmedPath;
     };
 
     let heroAnimationInstance = null;
@@ -71,9 +66,10 @@ const initialisePage = () => {
         const rawAnimationPath = overridePath || heroAnim.dataset.animationPath;
         const animationPath = normaliseAnimationPath(rawAnimationPath);
 
-        showHeroAnimationFallback();
+        hideHeroAnimationFallback();
 
         if (!window.lottie) {
+            showHeroAnimationFallback();
             return;
         }
 
@@ -100,6 +96,8 @@ const initialisePage = () => {
             animation.addEventListener('data_failed', showHeroAnimationFallback);
             animation.addEventListener('error', showHeroAnimationFallback);
             animation.addEventListener('DOMLoaded', hideHeroAnimationFallback);
+            animation.addEventListener('data_ready', hideHeroAnimationFallback);
+            animation.addEventListener('complete', hideHeroAnimationFallback);
 
             if ('IntersectionObserver' in window) {
                 const observer = new IntersectionObserver((entries) => {
@@ -148,7 +146,7 @@ const initialisePage = () => {
 
             heroAnimationContainer?.classList.add('chat-expanded');
 
-            loadHeroAnimation(heroAnim?.dataset?.neutralAnimationPath || '/animationNeutral.json');
+            loadHeroAnimation(heroAnim?.dataset?.neutralAnimationPath || 'animationNeutral.json');
         });
     }
 
