@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cuidado com as Telas</title>
+    <link rel="icon" href="/ImageRobo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,6 +16,7 @@
             --white: #fcfcfc;
             --text-dark: #01363A;
             --teal-tint: rgba(0, 181, 191, 0.08);
+            --visual-max-width: 280px;
         }
 
         * {
@@ -120,6 +122,7 @@
 
         .hero-container.chat-mode .hero-animation {
             width: 100%;
+            max-width: var(--visual-max-width);
         }
 
         @media (min-width: 768px) {
@@ -139,7 +142,8 @@
 
             .hero-container.chat-mode .hero-animation {
                 width: auto;
-                max-width: 580px;
+                max-width: var(--visual-max-width);
+                flex: 0 0 auto;
             }
 
             .hero-content {
@@ -147,7 +151,9 @@
             }
 
             .hero-animation {
-                width: 48%;
+                width: auto;
+                max-width: var(--visual-max-width);
+                flex: 0 0 auto;
             }
         }
 
@@ -186,7 +192,7 @@
 
         .hero-animation {
             width: 100%;
-            max-width: 420px;
+            max-width: var(--visual-max-width);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -196,8 +202,8 @@
         }
 
         .hero-animation.chat-expanded {
-            max-width: 520px;
-            transform: scale(1.08);
+            max-width: var(--visual-max-width);
+            transform: none;
         }
 
         .hero-lottie,
@@ -206,15 +212,15 @@
         .hero-animation img {
             width: 100% !important;
             height: auto !important;
-            max-width: 100%;
+            max-width: var(--visual-max-width);
         }
 
         .hero-lottie {
-            min-height: 280px;
+            min-height: 220px;
         }
 
         .hero-animation.chat-expanded .hero-lottie {
-            max-width: 520px;
+            max-width: var(--visual-max-width);
         }
 
         .hero-chat {
@@ -287,8 +293,8 @@
 
         @media (min-width: 992px) {
             .hero-animation.chat-expanded {
-                max-width: 640px;
-                transform: scale(1.15);
+                max-width: var(--visual-max-width);
+                transform: none;
             }
         }
 
@@ -318,7 +324,7 @@
 
         .hero-animation-fallback img {
             width: 100%;
-            max-width: 360px;
+            max-width: var(--visual-max-width);
             height: auto;
             display: block;
             border-radius: 16px;
@@ -411,13 +417,18 @@
         }
 
         .intro-image {
-            flex: 1;
+            flex: 0 0 auto;
             display: flex;
             justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: var(--visual-max-width);
+            margin: 0 auto;
         }
 
         .intro-image img {
-            max-width: 100%;
+            width: 100%;
+            max-width: var(--visual-max-width);
             height: auto;
             border-radius: 12px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
@@ -856,9 +867,9 @@
                 <div class="chat-bubble">Equilíbrio é tudo: tecnologia é divertida, mas o mundo offline também!</div>
             </div>
             <div class="hero-animation animate-on-scroll" id="heroAnimation">
-                <div id="heroAnim" class="hero-lottie hidden" data-animation-path="/animation.json" role="img" aria-label="Animação ilustrativa da campanha Cuidado com as Telas"></div>
+                <div id="heroAnim" class="hero-lottie hidden" data-animation-path="/Movimento1Robo.json" role="img" aria-label="Animação ilustrativa da campanha Cuidado com as Telas"></div>
                 <div id="heroAnimationFallback" class="hero-animation-fallback">
-                    <img src="/imagemRobo.png" alt="Ilustração de um robô representando a campanha Cuidado com as Telas" loading="lazy">
+                    <img src="/ImageRobo.png" alt="Ilustração de um robô representando a campanha Cuidado com as Telas" loading="lazy">
                 </div>
             </div>
         </div>
