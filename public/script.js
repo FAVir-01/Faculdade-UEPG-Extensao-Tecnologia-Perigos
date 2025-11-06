@@ -25,16 +25,27 @@ const initialisePage = () => {
     }
 
     const showHeroAnimationFallback = () => {
-        heroAnim?.classList.add('hidden');
-        heroAnimationFallback?.classList.remove('hidden');
+        if (heroAnim) {
+            heroAnim.classList.add('hidden');
+            heroAnim.innerHTML = '';
+        }
+
+        if (heroAnimationFallback) {
+            heroAnimationFallback.classList.remove('hidden');
+        }
     };
 
-    const hideHeroAnimationFallback = () => {
-        heroAnim?.classList.remove('hidden');
-        heroAnimationFallback?.classList.add('hidden');
+    const showHeroAnimation = () => {
+        if (heroAnim) {
+            heroAnim.classList.remove('hidden');
+        }
+
+        if (heroAnimationFallback) {
+            heroAnimationFallback.classList.add('hidden');
+        }
     };
 
-    const normaliseAnimationPath = (rawPath) => {
+    const resolveAnimationPath = (rawPath) => {
         const defaultPath = 'animation.json';
 
         if (!rawPath) {
@@ -47,12 +58,7 @@ const initialisePage = () => {
             return defaultPath;
         }
 
-        try {
-            return new URL(trimmedPath, window.location.href).href;
-        } catch (error) {
-            console.warn('Caminho de animação inválido, voltando ao padrão.', error);
-            return new URL(defaultPath, window.location.href).href;
-        }
+        return trimmedPath;
     };
 
     let heroAnimationInstance = null;
@@ -69,14 +75,18 @@ const initialisePage = () => {
         }
 
         const rawAnimationPath = overridePath || heroAnim.dataset.animationPath;
-        const animationPath = normaliseAnimationPath(rawAnimationPath);
+        const animationPath = resolveAnimationPath(rawAnimationPath);
 
-        hideHeroAnimationFallback();
+        if (!trimmedPath) {
+            return defaultPath;
+        }
 
         if (!window.lottie) {
             showHeroAnimationFallback();
             return;
         }
+
+        heroAnim.innerHTML = '';
 
         if (heroAnimationInstance) {
             heroAnimationInstance.destroy();
@@ -98,11 +108,17 @@ const initialisePage = () => {
 
             heroAnimationInstance = animation;
 
-            animation.addEventListener('data_failed', showHeroAnimationFallback);
-            animation.addEventListener('error', showHeroAnimationFallback);
-            animation.addEventListener('DOMLoaded', hideHeroAnimationFallback);
-            animation.addEventListener('data_ready', hideHeroAnimationFallback);
-            animation.addEventListener('complete', hideHeroAnimationFallback);
+            animation.addEventListener('data_failed', () => {
+                console.error('Falha ao carregar os dados da animação:', animationPath);
+                showHeroAnimationFallback();
+            });
+            animation.addEventListener('error', (event) => {
+                console.error('Erro da animação Lottie:', event);
+                showHeroAnimationFallback();
+            });
+            animation.addEventListener('DOMLoaded', showHeroAnimation);
+            animation.addEventListener('data_ready', showHeroAnimation);
+            animation.addEventListener('complete', showHeroAnimation);
 
             if ('IntersectionObserver' in window) {
                 const observer = new IntersectionObserver((entries) => {
