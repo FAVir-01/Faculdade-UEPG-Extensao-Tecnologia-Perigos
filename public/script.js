@@ -47,7 +47,12 @@ const initialisePage = () => {
             return defaultPath;
         }
 
-        return trimmedPath;
+        try {
+            return new URL(trimmedPath, window.location.href).href;
+        } catch (error) {
+            console.warn('Caminho de animação inválido, voltando ao padrão.', error);
+            return new URL(defaultPath, window.location.href).href;
+        }
     };
 
     let heroAnimationInstance = null;
