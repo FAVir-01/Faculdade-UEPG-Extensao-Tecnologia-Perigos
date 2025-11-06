@@ -71,6 +71,7 @@ const initialisePage = () => {
     const neutralAnimationPath = getAnimationPath(heroAnim, 'data-neutral-animation-path', './animationNeutral.json');
 
     let heroAnimationInstance = null;
+    let currentAnimationRequestId = 0;
 
     const destroyHeroAnimation = () => {
         if (heroAnimationInstance && typeof heroAnimationInstance.destroy === 'function') {
@@ -84,7 +85,30 @@ const initialisePage = () => {
         }
     };
 
-    const loadHeroAnimation = (targetPath) => {
+    const fetchAnimationData = async (animationPath) => {
+        try {
+            const response = await fetch(animationPath, { cache: 'no-store' });
+
+            if (!response.ok) {
+                throw new Error(`Resposta ${response.status} ao carregar a animação.`);
+            }
+
+            const data = await response.json();
+
+            if (!data || typeof data !== 'object') {
+                throw new Error('JSON de animação inválido.');
+            }
+
+            return data;
+        } catch (error) {
+            console.error('Falha ao obter os dados da animação:', animationPath, error);
+            return null;
+        }
+    };
+
+    const loadHeroAnimation = async (targetPath) => {
+        const requestId = ++currentAnimationRequestId;
+
         if (!heroAnim) {
             return;
         }
@@ -103,6 +127,17 @@ const initialisePage = () => {
             return;
         }
 
+        const animationData = await fetchAnimationData(animationPath);
+
+        if (!animationData) {
+            showHeroAnimationFallback();
+            return;
+        }
+
+        if (requestId !== currentAnimationRequestId) {
+            return;
+        }
+
         destroyHeroAnimation();
 
         try {
@@ -111,7 +146,7 @@ const initialisePage = () => {
                 renderer: 'svg',
                 loop: true,
                 autoplay: true,
-                path: animationPath,
+                animationData,
                 rendererSettings: {
                     progressiveLoad: true,
                     hideOnTransparent: true,
