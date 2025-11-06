@@ -28,56 +28,71 @@ const initialisePage = () => {
         }
     };
 
-    const sanitisePath = (rawPath, fallback) => {
+    const normalisePath = (rawPath, fallback) => {
         if (typeof rawPath !== 'string') {
             return fallback;
         }
 
         const trimmedValue = rawPath.trim();
 
-        return trimmedValue ? trimmedValue : fallback;
+        if (!trimmedValue) {
+            return fallback;
+        }
+
+        try {
+            return new URL(trimmedValue, window.location.href).href;
+        } catch (error) {
+            console.error('Caminho inválido para a animação:', trimmedValue, error);
+            return fallback;
+        }
     };
 
-    const getDatasetValue = (element, attribute) => {
+    const getAttributeValue = (element, attribute, fallback) => {
         if (!element) {
-            return null;
+            return fallback;
         }
 
         const value = element.getAttribute(attribute);
 
-        return typeof value === 'string' ? value : null;
+        return normalisePath(value, fallback);
     };
 
-    const defaultAnimationPath = sanitisePath(getDatasetValue(heroAnim, 'data-animation-path'), './animation.json');
-    const neutralAnimationPath = sanitisePath(getDatasetValue(heroAnim, 'data-neutral-animation-path'), './animationNeutral.json');
+    const defaultAnimationPath = getAttributeValue(heroAnim, 'data-animation-path', new URL('./animation.json', window.location.href).href);
+    const neutralAnimationPath = getAttributeValue(heroAnim, 'data-neutral-animation-path', new URL('./animationNeutral.json', window.location.href).href);
 
     let heroAnimationInstance = null;
-    let currentAnimationPath = defaultAnimationPath;
 
-    const loadHeroAnimation = (pathOverride) => {
+    const destroyHeroAnimation = () => {
+        if (heroAnimationInstance && typeof heroAnimationInstance.destroy === 'function') {
+            heroAnimationInstance.destroy();
+        }
+
+        heroAnimationInstance = null;
+
+        if (heroAnim) {
+            heroAnim.innerHTML = '';
+        }
+    };
+
+    const loadHeroAnimation = (targetPath) => {
         if (!heroAnim) {
             return;
         }
 
-        const animationPath = sanitisePath(pathOverride, currentAnimationPath);
-        currentAnimationPath = animationPath;
+        const animationPath = normalisePath(targetPath, defaultAnimationPath);
 
-    const defaultAnimationPath = sanitisePath(heroAnim?.dataset?.animationPath, 'animation.json');
-    const neutralAnimationPath = sanitisePath(heroAnim?.dataset?.neutralAnimationPath, 'animationNeutral.json');
+    const defaultAnimationPath = sanitisePath(getDatasetValue(heroAnim, 'data-animation-path'), './animation.json');
+    const neutralAnimationPath = sanitisePath(getDatasetValue(heroAnim, 'data-neutral-animation-path'), './animationNeutral.json');
 
-        if (!window.lottie) {
+        if (!window.lottie || typeof window.lottie.loadAnimation !== 'function') {
+            console.error('Lottie não está disponível para carregar a animação.');
             return;
         }
 
-        heroAnim.innerHTML = '';
-
-        if (heroAnimationInstance) {
-            heroAnimationInstance.destroy();
-            heroAnimationInstance = null;
-        }
+        destroyHeroAnimation();
 
         try {
-            const animation = window.lottie.loadAnimation({
+            heroAnimationInstance = window.lottie.loadAnimation({
                 container: heroAnim,
                 renderer: 'svg',
                 loop: true,
@@ -89,25 +104,25 @@ const initialisePage = () => {
                 },
             });
 
-            heroAnimationInstance = animation;
-
             const handleReady = () => {
                 showHeroAnimation();
             };
 
-            animation.addEventListener('data_ready', handleReady);
-            animation.addEventListener('DOMLoaded', handleReady);
-            animation.addEventListener('complete', handleReady);
-            animation.addEventListener('data_failed', () => {
+            heroAnimationInstance.addEventListener('data_ready', handleReady);
+            heroAnimationInstance.addEventListener('DOMLoaded', handleReady);
+            heroAnimationInstance.addEventListener('data_failed', () => {
                 console.error('Falha ao carregar os dados da animação:', animationPath);
+                destroyHeroAnimation();
                 showHeroAnimationFallback();
             });
-            animation.addEventListener('error', (event) => {
+            heroAnimationInstance.addEventListener('error', (event) => {
                 console.error('Erro da animação Lottie:', event);
+                destroyHeroAnimation();
                 showHeroAnimationFallback();
             });
         } catch (error) {
             console.error('Falha ao iniciar a animação Lottie:', error);
+            destroyHeroAnimation();
             showHeroAnimationFallback();
         }
     };
