@@ -35,7 +35,19 @@ const initialisePage = () => {
     };
 
     if (heroAnim) {
-        const animationPath = heroAnim.dataset.animationPath?.trim() || 'animation.json';
+        const rawAnimationPath = heroAnim.dataset.animationPath?.trim();
+        const animationPath = (() => {
+            if (!rawAnimationPath) {
+                return '/animation.json';
+            }
+
+            if (rawAnimationPath.startsWith('http://') || rawAnimationPath.startsWith('https://') || rawAnimationPath.startsWith('/')) {
+                return rawAnimationPath;
+            }
+
+            const normalisedPath = rawAnimationPath.replace(/^\.\/?/, '');
+            return `/${normalisedPath}`;
+        })();
 
         showHeroAnimationFallback();
 
