@@ -8,6 +8,64 @@ const initialisePage = () => {
     const heroChat = document.getElementById('heroChat');
     const saibaMaisBtn = document.getElementById('saibaMaisBtn');
 
+    const triggerChatWebhook = async () => {
+        if (typeof fetch !== 'function') {
+            console.error('Fetch API indisponível para enviar o webhook.');
+            return false;
+        }
+
+        const payload = {
+            event: 'saiba-mais-click',
+            timestamp: new Date().toISOString(),
+            location: window.location.href,
+            userAgent: navigator.userAgent,
+        };
+
+        let timeoutId = null;
+        let controller = null;
+
+        if (typeof AbortController === 'function') {
+            controller = new AbortController();
+            timeoutId = window.setTimeout(() => {
+                controller.abort();
+            }, 5000);
+        }
+
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+                signal: controller?.signal,
+            });
+
+            if (!response.ok) {
+                const responseText = await response.text();
+                console.error('Falha ao enviar dados para o webhook.', {
+                    status: response.status,
+                    body: responseText,
+                });
+                return false;
+            }
+
+            return true;
+        } catch (error) {
+            if (error?.name === 'AbortError') {
+                console.warn('Envio para o webhook expirou.');
+            } else {
+                console.error('Erro ao enviar dados para o webhook.', error);
+            }
+
+            return false;
+        } finally {
+            if (timeoutId !== null) {
+                window.clearTimeout(timeoutId);
+            }
+        }
+    };
+
     const showHeroAnimationFallback = () => {
         if (heroAnimationFallback) {
             heroAnimationFallback.classList.remove('hidden');
@@ -206,6 +264,8 @@ const initialisePage = () => {
 
     if (saibaMaisBtn) {
         saibaMaisBtn.addEventListener('click', () => {
+            triggerChatWebhook();
+
             if (heroContent) {
                 heroContent.classList.add('hidden');
             }
