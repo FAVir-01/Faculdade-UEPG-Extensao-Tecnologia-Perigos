@@ -14,11 +14,24 @@ const initialisePage = () => {
             return false;
         }
 
+        let sessionId = sessionStorage.getItem('session_id');
+
+        if (!sessionId) {
+            if (typeof crypto?.randomUUID === 'function') {
+                sessionId = crypto.randomUUID();
+            } else {
+                sessionId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+            }
+
+            sessionStorage.setItem('session_id', sessionId);
+        }
+
         const payload = {
             event: 'saiba-mais-click',
             timestamp: new Date().toISOString(),
             location: window.location.href,
             userAgent: navigator.userAgent,
+            sessionId,
         };
 
         let timeoutId = null;
