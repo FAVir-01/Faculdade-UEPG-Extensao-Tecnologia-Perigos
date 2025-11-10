@@ -8,15 +8,31 @@ const initialisePage = () => {
     const heroChat = document.getElementById('heroChat');
     const saibaMaisBtn = document.getElementById('saibaMaisBtn');
 
-    const triggerChatWebhook = async () => {
-        if (typeof fetch !== 'function') {
-            console.error('Fetch API indisponível para enviar o webhook.');
-            return false;
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const chatInput = document.getElementById('chatInput');
+    const chatSubmit = document.getElementById('chatSubmit');
+    const chatEmpty = document.getElementById('chatEmpty');
+
+    let typingIndicatorBubble = null;
+    let hasConversationStarted = false;
+    let isSendingMessage = false;
+    let messageSequence = 0;
+    let sessionId = null;
+
+    const ensureSessionId = () => {
+        if (sessionId) {
+            return sessionId;
         }
 
-        let sessionId = sessionStorage.getItem('session_id');
+        try {
+            const storedId = sessionStorage.getItem('session_id');
 
-        if (!sessionId) {
+            if (storedId) {
+                sessionId = storedId;
+                return sessionId;
+            }
+
             if (typeof crypto?.randomUUID === 'function') {
                 sessionId = crypto.randomUUID();
             } else {
@@ -24,24 +40,51 @@ const initialisePage = () => {
             }
 
             sessionStorage.setItem('session_id', sessionId);
+        } catch (error) {
+            console.warn('Não foi possível aceder ao sessionStorage. Um identificador temporário será utilizado.', error);
+            sessionId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
         }
 
-        const payload = {
-            event: 'saiba-mais-click',
+        return sessionId;
+    };
+
+    ensureSessionId();
+
+    const logWebhookError = (event, error) => {
+        if (error?.name === 'AbortError') {
+            console.warn('Envio para o webhook expirou.', { event });
+            return;
+        }
+
+        console.error('Erro ao enviar evento para o webhook.', {
+            event,
+            message: error?.message,
+        });
+    };
+
+    const sendChatEvent = async (event, payload = {}, options = {}) => {
+        if (typeof fetch !== 'function') {
+            console.error('Fetch API indisponível para enviar o webhook.');
+            return options.expectResponse ? null : false;
+        }
+
+        const { expectResponse = false, timeoutMs = 10000, throwOnError = expectResponse } = options;
+
+        const body = {
+            event,
+            sessionId: ensureSessionId(),
             timestamp: new Date().toISOString(),
-            location: window.location.href,
-            userAgent: navigator.userAgent,
-            sessionId,
+            ...payload,
         };
 
-        let timeoutId = null;
         let controller = null;
+        let timeoutId = null;
 
-        if (typeof AbortController === 'function') {
+        if (typeof AbortController === 'function' && Number.isFinite(timeoutMs) && timeoutMs > 0) {
             controller = new AbortController();
             timeoutId = window.setTimeout(() => {
                 controller.abort();
-            }, 5000);
+            }, timeoutMs);
         }
 
         try {
@@ -50,33 +93,275 @@ const initialisePage = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(payload),
+                body: JSON.stringify(body),
                 signal: controller?.signal,
             });
 
             if (!response.ok) {
-                const responseText = await response.text();
+                const responseText = await response.text().catch(() => '');
+                const error = new Error('Falha ao enviar dados para o webhook.');
+                error.status = response.status;
+                error.body = responseText;
+
+                if (throwOnError) {
+                    throw error;
+                }
+
                 console.error('Falha ao enviar dados para o webhook.', {
+                    event,
                     status: response.status,
                     body: responseText,
                 });
-                return false;
+
+                return expectResponse ? null : false;
             }
 
-            return true;
+            if (!expectResponse) {
+                return true;
+            }
+
+            const contentType = response.headers.get('content-type') ?? '';
+
+            if (contentType.includes('application/json')) {
+                return response.json();
+            }
+
+            const text = await response.text();
+
+            if (!text) {
+                return null;
+            }
+
+            try {
+                return JSON.parse(text);
+            } catch (parseError) {
+                return { message: text };
+            }
         } catch (error) {
-            if (error?.name === 'AbortError') {
-                console.warn('Envio para o webhook expirou.');
-            } else {
-                console.error('Erro ao enviar dados para o webhook.', error);
+            if (throwOnError) {
+                throw error;
             }
 
-            return false;
+            logWebhookError(event, error);
+
+            return expectResponse ? null : false;
         } finally {
             if (timeoutId !== null) {
                 window.clearTimeout(timeoutId);
             }
         }
+    };
+
+    const conversationHistory = [];
+
+    const updateEmptyState = () => {
+        if (!chatMessages || !chatEmpty) {
+            return;
+        }
+
+        const hasMessages = Boolean(chatMessages.querySelector('.chat-bubble:not(.typing-indicator)'));
+        const isTyping = Boolean(chatMessages.querySelector('.typing-indicator'));
+
+        if (hasMessages || isTyping) {
+            chatEmpty.classList.add('hidden');
+        } else {
+            chatEmpty.classList.remove('hidden');
+        }
+    };
+
+    const recordHistoryMessage = (message) => {
+        conversationHistory.push({
+            id: message.id,
+            role: message.role,
+            content: message.content,
+            timestamp: message.timestamp ?? new Date().toISOString(),
+        });
+    };
+
+    const initialiseExistingMessages = () => {
+        if (!chatMessages) {
+            return;
+        }
+
+        const bubbles = Array.from(chatMessages.querySelectorAll('.chat-bubble'));
+
+        bubbles.forEach((bubble, index) => {
+            const role = bubble.classList.contains('chat-bubble-user')
+                ? 'user'
+                : bubble.classList.contains('chat-bubble-system')
+                ? 'system'
+                : 'assistant';
+            const id = bubble.dataset.messageId || `initial-${role}-${index}`;
+            const content = bubble.textContent.trim();
+
+            bubble.dataset.messageId = id;
+            bubble.dataset.messageRole = role;
+
+            recordHistoryMessage({ id, role, content, timestamp: new Date().toISOString() });
+        });
+
+        updateEmptyState();
+    };
+
+    initialiseExistingMessages();
+    updateEmptyState();
+
+    const generateMessageId = (role) => {
+        messageSequence += 1;
+        return `${role}-${Date.now()}-${messageSequence}`;
+    };
+
+    const setBubbleContent = (bubble, text) => {
+        if (!bubble) {
+            return;
+        }
+
+        const content = typeof text === 'string' ? text : String(text ?? '');
+        const lines = content.split(/\n/);
+
+        while (bubble.firstChild) {
+            bubble.removeChild(bubble.firstChild);
+        }
+
+        lines.forEach((line, index) => {
+            bubble.appendChild(document.createTextNode(line));
+
+            if (index < lines.length - 1) {
+                bubble.appendChild(document.createElement('br'));
+            }
+        });
+    };
+
+    const scrollChatToBottom = () => {
+        if (!chatMessages) {
+            return;
+        }
+
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    const appendChatBubble = (message) => {
+        if (!chatMessages) {
+            return null;
+        }
+
+        const roleClass =
+            message.role === 'user'
+                ? 'chat-bubble-user'
+                : message.role === 'system'
+                ? 'chat-bubble-system'
+                : 'chat-bubble-assistant';
+
+        const bubble = document.createElement('div');
+        bubble.classList.add('chat-bubble', roleClass);
+        bubble.dataset.messageId = message.id;
+        bubble.dataset.messageRole = message.role;
+
+        setBubbleContent(bubble, message.content);
+
+        chatMessages.appendChild(bubble);
+
+        window.requestAnimationFrame(() => {
+            bubble.classList.add('chat-bubble-visible');
+        });
+
+        scrollChatToBottom();
+
+        updateEmptyState();
+
+        return bubble;
+    };
+
+    const showTypingIndicator = () => {
+        if (!chatMessages) {
+            return;
+        }
+
+        if (typingIndicatorBubble && typingIndicatorBubble.parentElement) {
+            typingIndicatorBubble.parentElement.removeChild(typingIndicatorBubble);
+        }
+
+        const bubble = document.createElement('div');
+        bubble.classList.add('chat-bubble', 'chat-bubble-assistant', 'typing-indicator');
+        bubble.dataset.messageRole = 'assistant';
+        bubble.setAttribute('role', 'status');
+        bubble.setAttribute('aria-live', 'polite');
+        bubble.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+
+        chatMessages.appendChild(bubble);
+
+        window.requestAnimationFrame(() => {
+            bubble.classList.add('chat-bubble-visible');
+        });
+
+        scrollChatToBottom();
+
+        typingIndicatorBubble = bubble;
+
+        updateEmptyState();
+    };
+
+    const hideTypingIndicator = () => {
+        if (!typingIndicatorBubble) {
+            return;
+        }
+
+        if (typingIndicatorBubble.parentElement) {
+            typingIndicatorBubble.parentElement.removeChild(typingIndicatorBubble);
+        }
+
+        typingIndicatorBubble = null;
+
+        updateEmptyState();
+    };
+
+    const extractAssistantContent = (payload) => {
+        if (payload == null) {
+            return '';
+        }
+
+        if (typeof payload === 'string') {
+            return payload.trim();
+        }
+
+        if (typeof payload === 'object') {
+            const keys = ['reply', 'message', 'text', 'content', 'response'];
+
+            for (const key of keys) {
+                const value = payload[key];
+
+                if (typeof value === 'string' && value.trim()) {
+                    return value.trim();
+                }
+            }
+
+            if (typeof payload.message === 'object' && payload.message !== null) {
+                return extractAssistantContent(payload.message);
+            }
+        }
+
+        return String(payload);
+    };
+
+    const startConversation = (metadata = {}) => {
+        if (hasConversationStarted) {
+            return;
+        }
+
+        hasConversationStarted = true;
+
+        sendChatEvent(
+            'conversation_status',
+            {
+                status: 'conversation_started',
+                location: window.location.href,
+                userAgent: navigator.userAgent,
+                ...metadata,
+            },
+            { timeoutMs: 5000 }
+        ).catch((error) => {
+            logWebhookError('conversation_status', error);
+        });
     };
 
     const showHeroAnimationFallback = () => {
@@ -277,7 +562,18 @@ const initialisePage = () => {
 
     if (saibaMaisBtn) {
         saibaMaisBtn.addEventListener('click', () => {
-            triggerChatWebhook();
+            sendChatEvent(
+                'saiba-mais-click',
+                {
+                    location: window.location.href,
+                    userAgent: navigator.userAgent,
+                },
+                { timeoutMs: 5000 }
+            ).catch((error) => {
+                logWebhookError('saiba-mais-click', error);
+            });
+
+            startConversation({ origin: 'cta_click' });
 
             if (heroContent) {
                 heroContent.classList.add('hidden');
@@ -296,6 +592,173 @@ const initialisePage = () => {
             }
 
             loadHeroAnimation(neutralAnimationPath, { preserveCurrentAnimation: true });
+
+            scrollChatToBottom();
+
+            if (chatInput && !chatInput.disabled) {
+                window.setTimeout(() => {
+                    chatInput.focus();
+                }, 200);
+            }
+        });
+    }
+
+    if (chatForm && chatInput) {
+        chatForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            if (isSendingMessage) {
+                chatInput.focus();
+                return;
+            }
+
+            const rawValue = chatInput.value ?? '';
+            const trimmedValue = rawValue.trim();
+
+            if (!trimmedValue) {
+                chatInput.value = '';
+                chatInput.focus();
+                return;
+            }
+
+            isSendingMessage = true;
+
+            chatInput.value = '';
+            chatInput.disabled = true;
+
+            if (chatSubmit) {
+                chatSubmit.disabled = true;
+            }
+
+            const userMessage = {
+                id: generateMessageId('user'),
+                role: 'user',
+                content: trimmedValue,
+                timestamp: new Date().toISOString(),
+            };
+
+            recordHistoryMessage(userMessage);
+            appendChatBubble(userMessage);
+
+            startConversation({ origin: 'user_message', firstMessageId: userMessage.id });
+
+            sendChatEvent('message_status', {
+                status: 'sent',
+                direction: 'outbound',
+                messageId: userMessage.id,
+                message: userMessage.content,
+            }).catch((error) => logWebhookError('message_status', error));
+
+            showTypingIndicator();
+
+            sendChatEvent('conversation_status', {
+                status: 'assistant_typing',
+                active: true,
+                replyingTo: userMessage.id,
+            }).catch((error) => logWebhookError('conversation_status', error));
+
+            try {
+                const historyPayload = conversationHistory.map((entry) => ({ ...entry }));
+
+                const responsePayload = await sendChatEvent(
+                    'user_message',
+                    {
+                        messageId: userMessage.id,
+                        message: userMessage.content,
+                        history: historyPayload,
+                    },
+                    { expectResponse: true, timeoutMs: 20000, throwOnError: true }
+                );
+
+                sendChatEvent('message_status', {
+                    status: 'delivered',
+                    direction: 'outbound',
+                    messageId: userMessage.id,
+                }).catch((error) => logWebhookError('message_status', error));
+
+                const assistantRawText = extractAssistantContent(responsePayload);
+                const assistantText = assistantRawText || 'Consegui registrar sua mensagem, mas não recebi uma resposta desta vez.';
+
+                hideTypingIndicator();
+
+                sendChatEvent('conversation_status', {
+                    status: 'assistant_typing',
+                    active: false,
+                    replyingTo: userMessage.id,
+                }).catch((error) => logWebhookError('conversation_status', error));
+
+                const assistantMessage = {
+                    id: generateMessageId('assistant'),
+                    role: 'assistant',
+                    content: assistantText,
+                    timestamp: new Date().toISOString(),
+                    inReplyTo: userMessage.id,
+                };
+
+                recordHistoryMessage(assistantMessage);
+                appendChatBubble(assistantMessage);
+
+                sendChatEvent('message_status', {
+                    status: 'delivered',
+                    direction: 'inbound',
+                    messageId: assistantMessage.id,
+                    inReplyTo: userMessage.id,
+                    message: assistantMessage.content,
+                }).catch((error) => logWebhookError('message_status', error));
+
+                sendChatEvent('assistant_response', {
+                    messageId: assistantMessage.id,
+                    inReplyTo: userMessage.id,
+                    message: assistantMessage.content,
+                }).catch((error) => logWebhookError('assistant_response', error));
+            } catch (error) {
+                hideTypingIndicator();
+
+                sendChatEvent('conversation_status', {
+                    status: 'assistant_typing',
+                    active: false,
+                    replyingTo: userMessage.id,
+                }).catch((err) => logWebhookError('conversation_status', err));
+
+                sendChatEvent('message_status', {
+                    status: 'failed',
+                    direction: 'outbound',
+                    messageId: userMessage.id,
+                    error: error?.message ?? 'unknown-error',
+                }).catch((err) => logWebhookError('message_status', err));
+
+                logWebhookError('user_message', error);
+
+                const systemMessage = {
+                    id: generateMessageId('system'),
+                    role: 'system',
+                    content: 'Desculpe, ocorreu um problema ao obter a resposta. Tente novamente em instantes.',
+                    timestamp: new Date().toISOString(),
+                    relatedTo: userMessage.id,
+                };
+
+                recordHistoryMessage(systemMessage);
+                appendChatBubble(systemMessage);
+
+                sendChatEvent('message_status', {
+                    status: 'error',
+                    direction: 'system',
+                    messageId: systemMessage.id,
+                    relatedTo: userMessage.id,
+                    error: error?.message ?? 'unknown-error',
+                }).catch((err) => logWebhookError('message_status', err));
+            } finally {
+                hideTypingIndicator();
+
+                isSendingMessage = false;
+
+                chatInput.disabled = false;
+                chatInput.focus();
+
+                if (chatSubmit) {
+                    chatSubmit.disabled = false;
+                }
+            }
         });
     }
 
