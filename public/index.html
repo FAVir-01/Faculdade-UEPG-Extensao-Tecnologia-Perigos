@@ -113,11 +113,45 @@
 
         .hero-container.chat-mode {
             justify-content: center;
-            background: var(--white);
-            border-radius: 24px;
-            padding: 40px 28px;
-            border: 1px solid rgba(0, 181, 191, 0.15);
-            box-shadow: 0 24px 48px rgba(1, 54, 58, 0.12);
+            gap: 40px;
+            padding: 16px 0 56px;
+            background: transparent;
+            position: relative;
+        }
+
+        .hero-container.chat-mode::before,
+        .hero-container.chat-mode::after {
+            content: '';
+            position: absolute;
+            z-index: 0;
+            background: rgba(0, 181, 191, 0.08);
+            border-radius: 28px;
+            filter: drop-shadow(0 28px 50px rgba(1, 54, 58, 0.08));
+            animation: heroBubbleFloat 10s ease-in-out infinite;
+            pointer-events: none;
+            transform: translateY(0) rotate(var(--bubble-rotate, 0deg));
+        }
+
+        .hero-container.chat-mode::before {
+            width: 320px;
+            height: 180px;
+            top: -18px;
+            left: -24px;
+            --bubble-rotate: -2deg;
+        }
+
+        .hero-container.chat-mode::after {
+            width: 240px;
+            height: 150px;
+            bottom: -36px;
+            left: 140px;
+            --bubble-rotate: 4deg;
+            animation-delay: 2.5s;
+        }
+
+        .hero-container.chat-mode > * {
+            position: relative;
+            z-index: 1;
         }
 
         .hero-container.chat-mode .hero-animation {
@@ -135,15 +169,19 @@
             .hero-container.chat-mode {
                 flex-direction: row;
                 justify-content: center;
-                align-items: center;
-                padding: 48px;
-                gap: 48px;
+                align-items: stretch;
+                padding: 56px 20px 72px;
+                gap: 72px;
             }
 
             .hero-container.chat-mode .hero-animation {
                 width: auto;
                 max-width: var(--visual-max-width);
                 flex: 0 0 auto;
+            }
+
+            .hero-chat {
+                max-width: 640px;
             }
 
             .hero-content {
@@ -154,6 +192,16 @@
                 width: auto;
                 max-width: var(--visual-max-width);
                 flex: 0 0 auto;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-chat {
+                max-width: 720px;
+            }
+
+            .hero-container.chat-mode {
+                gap: 96px;
             }
         }
 
@@ -224,71 +272,260 @@
         }
 
         .hero-chat {
-            display: none;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            width: 100%;
+            max-width: 560px;
+            flex: 1 1 420px;
+        }
+
+        .hero-chat .chat-messages {
+            display: flex;
             flex-direction: column;
             gap: 18px;
-            width: 100%;
-            max-width: 420px;
+            min-height: 320px;
+            max-height: clamp(420px, 62vh, 560px);
+            overflow-y: auto;
+            padding-right: 8px;
+            scroll-behavior: smooth;
+            background: transparent;
+            padding-bottom: 4px;
+        }
+
+        .hero-chat .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .hero-chat .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(0, 181, 191, 0.35);
+            border-radius: 999px;
+        }
+
+        .hero-chat .chat-empty {
+            align-self: flex-start;
+            color: rgba(1, 54, 58, 0.72);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            padding: 18px 22px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px dashed rgba(0, 181, 191, 0.3);
+            box-shadow: 0 18px 40px rgba(1, 54, 58, 0.1);
+            animation: floatHint 6s ease-in-out infinite;
+            position: relative;
+        }
+
+        .hero-chat .chat-empty::after {
+            content: '';
+            position: absolute;
+            left: 36px;
+            bottom: -10px;
+            width: 18px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px dashed rgba(0, 181, 191, 0.3);
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+            box-shadow: 12px 12px 30px rgba(1, 54, 58, 0.08);
+        }
+
+        .hero-chat .chat-empty strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+            color: var(--teal-dark);
+        }
+
+        .hero-chat .chat-form {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 4px;
+        }
+
+        .hero-chat .chat-input {
+            flex: 1;
+            border: 1px solid rgba(0, 131, 138, 0.25);
+            border-radius: 20px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            min-height: 52px;
+        }
+
+        .hero-chat .chat-input:focus {
+            outline: none;
+            border-color: var(--teal-primary);
+            box-shadow: 0 0 0 3px rgba(0, 181, 191, 0.18);
+        }
+
+        .hero-chat .chat-submit {
+            background: var(--teal-primary);
+            color: var(--white);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .hero-chat .chat-hint {
+            font-size: 0.85rem;
+            color: rgba(1, 54, 58, 0.68);
+            margin-top: -8px;
+            padding-left: 4px;
+        }
+
+        .hero-chat .chat-submit:hover:not(:disabled) {
+            background: var(--teal-dark);
+            transform: translateY(-1px);
+        }
+
+        .hero-chat .chat-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .hero-chat .chat-bubble {
             position: relative;
-            background: var(--teal-primary);
-            color: var(--white);
-            padding: 16px 22px;
-            border-radius: 20px;
+            padding: 18px 22px;
+            border-radius: 24px;
             font-weight: 500;
-            box-shadow: 0 16px 28px rgba(0, 131, 138, 0.24);
+            max-width: 94%;
+            line-height: 1.5;
+            word-break: break-word;
             opacity: 0;
             transform: translateY(12px);
-            transition: opacity 0.4s ease, transform 0.4s ease;
-            max-width: 92%;
-            align-self: flex-start;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 18px 40px rgba(1, 54, 58, 0.16);
+        }
+
+        .hero-chat .chat-bubble-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .hero-chat .chat-bubble::after {
             content: '';
             position: absolute;
-            left: 28px;
-            bottom: -12px;
-            width: 20px;
-            height: 20px;
+            bottom: -10px;
+            width: 18px;
+            height: 18px;
             background: inherit;
             transform: rotate(45deg);
-            border-bottom-right-radius: 6px;
-            box-shadow: 6px 6px 18px rgba(0, 131, 138, 0.18);
         }
 
-        .hero-chat .chat-bubble:nth-child(even) {
-            align-self: flex-end;
+        .hero-chat .chat-bubble-assistant {
+            align-self: flex-start;
             background: var(--white);
-            color: var(--teal-dark);
-            box-shadow: 0 16px 28px rgba(1, 54, 58, 0.12);
+            color: var(--text-dark);
+            border: 1px solid rgba(0, 131, 138, 0.22);
         }
 
-        .hero-chat .chat-bubble:nth-child(even)::after {
+        .hero-chat .chat-bubble-assistant::after {
+            left: 36px;
+            border-top: 1px solid rgba(0, 131, 138, 0.22);
+            border-left: 1px solid rgba(0, 131, 138, 0.22);
+            box-shadow: 14px 14px 36px rgba(1, 54, 58, 0.12);
+        }
+
+        .hero-chat .chat-bubble-user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--teal-primary), var(--teal-deep));
+            color: var(--white);
+            border: none;
+        }
+
+        .hero-chat .chat-bubble-user::after {
             left: auto;
             right: 28px;
-            border-bottom-right-radius: 0;
-            border-bottom-left-radius: 6px;
-            box-shadow: -6px 6px 18px rgba(1, 54, 58, 0.12);
+            border-right: none;
+            border-bottom: none;
+            box-shadow: 10px 10px 30px rgba(0, 101, 106, 0.2);
         }
 
-        .hero-container.chat-mode .hero-chat {
-            display: flex;
+        .hero-chat .chat-bubble-system {
+            align-self: center;
+            background: rgba(255, 255, 255, 0.94);
+            color: var(--teal-dark);
+            border: 1px dashed rgba(0, 181, 191, 0.4);
         }
 
-        .hero-container.chat-mode .chat-bubble {
-            opacity: 1;
-            transform: translateY(0);
+        .hero-chat .chat-bubble-system::after {
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            border: 1px dashed rgba(0, 181, 191, 0.4);
+            border-top: none;
+            border-left: none;
+            box-shadow: 12px 12px 30px rgba(0, 131, 138, 0.18);
         }
 
-        .hero-container.chat-mode .chat-bubble:nth-child(2) {
-            transition-delay: 0.1s;
+        .hero-chat .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 46px;
         }
 
-        .hero-container.chat-mode .chat-bubble:nth-child(3) {
-            transition-delay: 0.2s;
+        .hero-chat .typing-indicator::after {
+            display: none;
+        }
+
+        .hero-chat .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.25;
+            animation: typingPulse 1.2s infinite;
+        }
+
+        .hero-chat .typing-dot:nth-child(2) {
+            animation-delay: 0.18s;
+        }
+
+        .hero-chat .typing-dot:nth-child(3) {
+            animation-delay: 0.36s;
+        }
+
+        @keyframes floatHint {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
+        @keyframes heroBubbleFloat {
+            0%,
+            100% {
+                transform: translateY(0) rotate(var(--bubble-rotate, 0deg));
+            }
+
+            50% {
+                transform: translateY(-14px) rotate(var(--bubble-rotate, 0deg));
+            }
+        }
+
+        @keyframes typingPulse {
+            0%,
+            100% {
+                opacity: 0.25;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(-3px);
+            }
         }
 
         @media (min-width: 992px) {
@@ -300,17 +537,20 @@
 
         @media (max-width: 767px) {
             .hero-container.chat-mode {
-                padding: 32px 20px;
-                gap: 32px;
+                padding: 36px 16px 52px;
+                gap: 40px;
             }
 
-            .hero-chat .chat-bubble::after {
-                left: 20px;
+            .hero-chat .chat-bubble {
+                padding: 16px 18px;
             }
 
-            .hero-chat .chat-bubble:nth-child(even)::after {
-                left: auto;
-                right: 20px;
+            .hero-chat .chat-bubble-assistant::after {
+                left: 24px;
+            }
+
+            .hero-chat .chat-bubble-user::after {
+                right: 22px;
             }
         }
 
@@ -332,6 +572,18 @@
 
         .hidden {
             display: none !important;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         /* Sections */
@@ -861,9 +1113,18 @@
                 <button type="button" class="btn" id="saibaMaisBtn">Saiba mais</button>
             </div>
             <div class="hero-chat hidden" id="heroChat" aria-live="polite">
-                <div class="chat-bubble">Vamos fazer uma pausa para descansar os olhos e alongar o corpo?</div>
-                <div class="chat-bubble">Que tal chamar os amigos para brincar lá fora por alguns minutos?</div>
-                <div class="chat-bubble">Equilíbrio é tudo: tecnologia é divertida, mas o mundo offline também!</div>
+                <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-relevant="additions text">
+                    <div class="chat-empty" id="chatEmpty">
+                        <strong>Converse com o nosso robozinho.</strong>
+                        Escreva a primeira mensagem e veja como ele responde no seu ritmo.
+                    </div>
+                </div>
+                <form class="chat-form" id="chatForm" novalidate>
+                    <label class="sr-only" for="chatInput">Digite sua mensagem para conversar com a IA</label>
+                    <input class="chat-input" id="chatInput" type="text" name="message" autocomplete="off" placeholder="Digite sua mensagem" maxlength="500" required>
+                    <button class="chat-submit" type="submit" id="chatSubmit">Enviar</button>
+                </form>
+                <p class="chat-hint">Pressione Enter ou toque em “Enviar” para mandar a sua mensagem.</p>
             </div>
             <div class="hero-animation animate-on-scroll" id="heroAnimation">
                 <div id="heroAnim" class="hero-lottie" data-animation-path="./animation.json" data-neutral-animation-path="./animationNeutral.json" role="img" aria-label="Animação ilustrativa da campanha Cuidado com as Telas"></div>
