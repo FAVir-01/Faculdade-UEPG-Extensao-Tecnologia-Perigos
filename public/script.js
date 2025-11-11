@@ -323,7 +323,33 @@ const initialisePage = () => {
         updateEmptyState();
     };
 
-    const extractAssistantContent = (payload) => {
+    const preferredAssistantKeys = ['output', 'reply', 'message', 'text', 'content', 'response'];
+
+    function normaliseAssistantValue(value) {
+        if (value == null) {
+            return '';
+        }
+
+        if (typeof value === 'string') {
+            return value.trim();
+        }
+
+        if (Array.isArray(value)) {
+            const combined = value
+                .map((entry) => normaliseAssistantValue(entry))
+                .filter(Boolean);
+
+            return combined.join('\n').trim();
+        }
+
+        if (typeof value === 'object') {
+            return extractAssistantContent(value);
+        }
+
+        return String(value ?? '').trim();
+    }
+
+    function extractAssistantContent(payload) {
         if (payload == null) {
             return '';
         }
@@ -332,24 +358,56 @@ const initialisePage = () => {
             return payload.trim();
         }
 
+        if (Array.isArray(payload)) {
+            const combined = payload
+                .map((entry) => extractAssistantContent(entry))
+                .filter(Boolean);
+
+            return combined.join('\n').trim();
+        }
+
         if (typeof payload === 'object') {
-            const keys = ['output', 'reply', 'message', 'text', 'content', 'response'];
+            for (const key of preferredAssistantKeys) {
+                const normalised = normaliseAssistantValue(payload[key]);
 
-            for (const key of keys) {
-                const value = payload[key];
-
-                if (typeof value === 'string' && value.trim()) {
-                    return value.trim();
+                if (normalised) {
+                    return normalised;
                 }
             }
 
-            if (typeof payload.message === 'object' && payload.message !== null) {
-                return extractAssistantContent(payload.message);
+            for (const entryKey of Object.keys(payload)) {
+                if (preferredAssistantKeys.includes(entryKey.toLowerCase())) {
+                    const normalised = normaliseAssistantValue(payload[entryKey]);
+
+                    if (normalised) {
+                        return normalised;
+                    }
+                }
+            }
+
+            if (typeof payload.data !== 'undefined') {
+                const normalisedData = normaliseAssistantValue(payload.data);
+
+                if (normalisedData) {
+                    return normalisedData;
+                }
+            }
+
+            for (const key of Object.keys(payload)) {
+                const value = payload[key];
+
+                if (value && typeof value === 'object') {
+                    const nested = extractAssistantContent(value);
+
+                    if (nested) {
+                        return nested;
+                    }
+                }
             }
         }
 
-        return String(payload);
-    };
+        return String(payload ?? '').trim();
+    }
 
     const startConversation = (metadata = {}) => {
         if (hasConversationStarted) {
