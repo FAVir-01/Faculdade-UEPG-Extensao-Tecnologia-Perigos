@@ -16,9 +16,13 @@ const initialisePage = () => {
 
     let typingIndicatorBubble = null;
     let hasConversationStarted = false;
+    let hasInitialAssistantMessage = false;
     let isSendingMessage = false;
     let messageSequence = 0;
     let sessionId = null;
+
+    const assistantFallbackMessage = 'Consegui registrar sua mensagem, mas não recebi uma resposta desta vez.';
+    const assistantErrorMessage = 'Desculpe, ocorreu um problema ao obter a resposta. Tente novamente em instantes.';
 
     const ensureSessionId = () => {
         if (sessionId) {
@@ -198,6 +202,10 @@ const initialisePage = () => {
             bubble.dataset.messageRole = role;
 
             recordHistoryMessage({ id, role, content, timestamp: new Date().toISOString() });
+
+            if (role === 'assistant') {
+                hasInitialAssistantMessage = true;
+            }
         });
 
         updateEmptyState();
@@ -325,7 +333,7 @@ const initialisePage = () => {
         }
 
         if (typeof payload === 'object') {
-            const keys = ['reply', 'message', 'text', 'content', 'response'];
+            const keys = ['output', 'reply', 'message', 'text', 'content', 'response'];
 
             for (const key of keys) {
                 const value = payload[key];
@@ -600,6 +608,125 @@ const initialisePage = () => {
                     chatInput.focus();
                 }, 200);
             }
+
+            const requestInitialAssistantMessage = async () => {
+                if (isSendingMessage || hasInitialAssistantMessage) {
+                    return;
+                }
+
+                isSendingMessage = true;
+
+                if (chatInput) {
+                    chatInput.disabled = true;
+                }
+
+                if (chatSubmit) {
+                    chatSubmit.disabled = true;
+                }
+
+                showTypingIndicator();
+
+                sendChatEvent('conversation_status', {
+                    status: 'assistant_typing',
+                    active: true,
+                }).catch((error) => logWebhookError('conversation_status', error));
+
+                try {
+                    const historyPayload = conversationHistory.map((entry) => ({ ...entry }));
+                    const responsePayload = await sendChatEvent(
+                        'conversation_started',
+                        {
+                            history: historyPayload,
+                            origin: 'cta_click',
+                        },
+                        { expectResponse: true, timeoutMs: 20000, throwOnError: true }
+                    );
+
+                    sendChatEvent('conversation_status', {
+                        status: 'assistant_typing',
+                        active: false,
+                    }).catch((error) => logWebhookError('conversation_status', error));
+
+                    const assistantRawText = extractAssistantContent(responsePayload);
+                    const assistantText = assistantRawText || assistantFallbackMessage;
+
+                    const assistantMessage = {
+                        id: generateMessageId('assistant'),
+                        role: 'assistant',
+                        content: assistantText,
+                        timestamp: new Date().toISOString(),
+                    };
+
+                    hideTypingIndicator();
+
+                    recordHistoryMessage(assistantMessage);
+                    appendChatBubble(assistantMessage);
+
+                    hasInitialAssistantMessage = true;
+
+                    const inboundStatusPayload = {
+                        status: 'delivered',
+                        direction: 'inbound',
+                        messageId: assistantMessage.id,
+                        message: assistantMessage.content,
+                    };
+
+                    sendChatEvent('message_status', inboundStatusPayload).catch((error) =>
+                        logWebhookError('message_status', error)
+                    );
+
+                    const assistantResponsePayload = {
+                        messageId: assistantMessage.id,
+                        message: assistantMessage.content,
+                    };
+
+                    sendChatEvent('assistant_response', assistantResponsePayload).catch((error) =>
+                        logWebhookError('assistant_response', error)
+                    );
+                } catch (error) {
+                    hideTypingIndicator();
+
+                    sendChatEvent('conversation_status', {
+                        status: 'assistant_typing',
+                        active: false,
+                    }).catch((err) => logWebhookError('conversation_status', err));
+
+                    const systemMessage = {
+                        id: generateMessageId('system'),
+                        role: 'system',
+                        content: assistantErrorMessage,
+                        timestamp: new Date().toISOString(),
+                    };
+
+                    recordHistoryMessage(systemMessage);
+                    appendChatBubble(systemMessage);
+
+                    sendChatEvent('message_status', {
+                        status: 'error',
+                        direction: 'system',
+                        messageId: systemMessage.id,
+                        error: error?.message ?? 'unknown-error',
+                    }).catch((err) => logWebhookError('message_status', err));
+                } finally {
+                    hideTypingIndicator();
+
+                    isSendingMessage = false;
+
+                    if (chatInput) {
+                        chatInput.disabled = false;
+
+                        window.setTimeout(() => {
+                            chatInput.focus();
+                        }, 200);
+                    }
+
+                    if (chatSubmit) {
+                        chatSubmit.disabled = false;
+                    }
+                }
+            };
+
+            requestInitialAssistantMessage();
         });
     }
 
@@ -661,7 +788,7 @@ const initialisePage = () => {
                 const historyPayload = conversationHistory.map((entry) => ({ ...entry }));
 
                 const responsePayload = await sendChatEvent(
-                    'user_message',
+                    'conversation_ongoing',
                     {
                         messageId: userMessage.id,
                         message: userMessage.content,
@@ -677,7 +804,7 @@ const initialisePage = () => {
                 }).catch((error) => logWebhookError('message_status', error));
 
                 const assistantRawText = extractAssistantContent(responsePayload);
-                const assistantText = assistantRawText || 'Consegui registrar sua mensagem, mas não recebi uma resposta desta vez.';
+                const assistantText = assistantRawText || assistantFallbackMessage;
 
                 hideTypingIndicator();
 
@@ -732,7 +859,7 @@ const initialisePage = () => {
                 const systemMessage = {
                     id: generateMessageId('system'),
                     role: 'system',
-                    content: 'Desculpe, ocorreu um problema ao obter a resposta. Tente novamente em instantes.',
+                    content: assistantErrorMessage,
                     timestamp: new Date().toISOString(),
                     relatedTo: userMessage.id,
                 };
