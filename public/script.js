@@ -286,6 +286,8 @@ const initialisePage = () => {
             return;
         }
 
+        activateThinkingAnimation();
+
         if (typingIndicatorBubble && typingIndicatorBubble.parentElement) {
             typingIndicatorBubble.parentElement.removeChild(typingIndicatorBubble);
         }
@@ -320,6 +322,8 @@ const initialisePage = () => {
         }
 
         typingIndicatorBubble = null;
+
+        restoreHeroAnimationState();
 
         updateEmptyState();
     };
@@ -492,9 +496,58 @@ const initialisePage = () => {
 
     const defaultAnimationPath = getAnimationPath(heroAnim, 'data-animation-path', './animation.json');
     const neutralAnimationPath = getAnimationPath(heroAnim, 'data-neutral-animation-path', './animationNeutral.json');
+    const thinkingAnimationPath = getAnimationPath(heroAnim, 'data-thinking-animation-path', './animationThinking.json');
 
     let heroAnimationInstance = null;
     let currentAnimationRequestId = 0;
+    let activeHeroAnimationPath = null;
+    let restoreHeroAnimationPath = null;
+    let isThinkingAnimationActive = false;
+
+    const updateActiveHeroAnimationPath = (path) => {
+        activeHeroAnimationPath = path;
+
+        if (path && path !== thinkingAnimationPath) {
+            restoreHeroAnimationPath = path;
+        }
+    };
+
+    const activateThinkingAnimation = () => {
+        if (!thinkingAnimationPath || isThinkingAnimationActive) {
+            return;
+        }
+
+        const fallbackPath =
+            (activeHeroAnimationPath && activeHeroAnimationPath !== thinkingAnimationPath
+                ? activeHeroAnimationPath
+                : null) ??
+            restoreHeroAnimationPath ??
+            neutralAnimationPath ??
+            defaultAnimationPath;
+
+        restoreHeroAnimationPath = fallbackPath;
+        isThinkingAnimationActive = true;
+
+        loadHeroAnimation(thinkingAnimationPath, { preserveCurrentAnimation: true });
+    };
+
+    const restoreHeroAnimationState = (options = {}) => {
+        const { force = false, preserveCurrentAnimation = true } = options;
+        const shouldRestore =
+            force || isThinkingAnimationActive || activeHeroAnimationPath === thinkingAnimationPath;
+
+        if (!shouldRestore) {
+            return;
+        }
+
+        const targetPath = restoreHeroAnimationPath ?? neutralAnimationPath ?? defaultAnimationPath;
+
+        isThinkingAnimationActive = false;
+
+        if (targetPath && targetPath !== thinkingAnimationPath) {
+            loadHeroAnimation(targetPath, { preserveCurrentAnimation });
+        }
+    };
 
     const destroyHeroAnimation = () => {
         if (heroAnimationInstance && typeof heroAnimationInstance.destroy === 'function') {
@@ -502,6 +555,7 @@ const initialisePage = () => {
         }
 
         heroAnimationInstance = null;
+        activeHeroAnimationPath = null;
 
         if (heroAnim) {
             heroAnim.innerHTML = '';
@@ -594,6 +648,7 @@ const initialisePage = () => {
             });
 
             const handleReady = () => {
+                updateActiveHeroAnimationPath(animationPath);
                 showHeroAnimation();
 
                 if (heroAnimationInstance) {
@@ -608,16 +663,31 @@ const initialisePage = () => {
                 console.error('Falha ao carregar os dados da animação:', animationPath);
                 destroyHeroAnimation();
                 showHeroAnimationFallback();
+                updateActiveHeroAnimationPath(null);
+
+                if (animationPath === thinkingAnimationPath) {
+                    restoreHeroAnimationState({ force: true, preserveCurrentAnimation: false });
+                }
             });
             heroAnimationInstance.addEventListener('error', (event) => {
                 console.error('Erro da animação Lottie:', event);
                 destroyHeroAnimation();
                 showHeroAnimationFallback();
+                updateActiveHeroAnimationPath(null);
+
+                if (animationPath === thinkingAnimationPath) {
+                    restoreHeroAnimationState({ force: true, preserveCurrentAnimation: false });
+                }
             });
         } catch (error) {
             console.error('Falha ao iniciar a animação Lottie:', error);
             destroyHeroAnimation();
             showHeroAnimationFallback();
+            updateActiveHeroAnimationPath(null);
+
+            if (animationPath === thinkingAnimationPath) {
+                restoreHeroAnimationState({ force: true, preserveCurrentAnimation: false });
+            }
         }
     };
 
@@ -785,50 +855,31 @@ const initialisePage = () => {
 
             startConversation({ origin: 'user_message', firstMessageId: userMessage.id });
 
-            sendChatEvent('message_status', {
-                status: 'sent',
-                direction: 'outbound',
-                messageId: userMessage.id,
-                message: userMessage.content,
-            }).catch((error) => logWebhookError('message_status', error));
-
             showTypingIndicator();
-
-            sendChatEvent('conversation_status', {
-                status: 'assistant_typing',
-                active: true,
-                replyingTo: userMessage.id,
-            }).catch((error) => logWebhookError('conversation_status', error));
 
             try {
                 const historyPayload = conversationHistory.map((entry) => ({ ...entry }));
 
                 const responsePayload = await sendChatEvent(
-                    'conversation_ongoing',
+                    'message_sent',
                     {
                         messageId: userMessage.id,
                         message: userMessage.content,
+                        userMessage: {
+                            id: userMessage.id,
+                            role: userMessage.role,
+                            content: userMessage.content,
+                            timestamp: userMessage.timestamp,
+                        },
                         history: historyPayload,
                     },
                     { expectResponse: true, timeoutMs: 20000, throwOnError: true }
                 );
 
-                sendChatEvent('message_status', {
-                    status: 'delivered',
-                    direction: 'outbound',
-                    messageId: userMessage.id,
-                }).catch((error) => logWebhookError('message_status', error));
-
                 const assistantRawText = extractAssistantContent(responsePayload);
                 const assistantText = assistantRawText || assistantFallbackMessage;
 
                 hideTypingIndicator();
-
-                sendChatEvent('conversation_status', {
-                    status: 'assistant_typing',
-                    active: false,
-                    replyingTo: userMessage.id,
-                }).catch((error) => logWebhookError('conversation_status', error));
 
                 const assistantMessage = {
                     id: generateMessageId('assistant'),
@@ -840,37 +891,10 @@ const initialisePage = () => {
 
                 recordHistoryMessage(assistantMessage);
                 appendChatBubble(assistantMessage);
-
-                sendChatEvent('message_status', {
-                    status: 'delivered',
-                    direction: 'inbound',
-                    messageId: assistantMessage.id,
-                    inReplyTo: userMessage.id,
-                    message: assistantMessage.content,
-                }).catch((error) => logWebhookError('message_status', error));
-
-                sendChatEvent('assistant_response', {
-                    messageId: assistantMessage.id,
-                    inReplyTo: userMessage.id,
-                    message: assistantMessage.content,
-                }).catch((error) => logWebhookError('assistant_response', error));
             } catch (error) {
                 hideTypingIndicator();
 
-                sendChatEvent('conversation_status', {
-                    status: 'assistant_typing',
-                    active: false,
-                    replyingTo: userMessage.id,
-                }).catch((err) => logWebhookError('conversation_status', err));
-
-                sendChatEvent('message_status', {
-                    status: 'failed',
-                    direction: 'outbound',
-                    messageId: userMessage.id,
-                    error: error?.message ?? 'unknown-error',
-                }).catch((err) => logWebhookError('message_status', err));
-
-                logWebhookError('user_message', error);
+                logWebhookError('message_sent', error);
 
                 const systemMessage = {
                     id: generateMessageId('system'),
@@ -882,14 +906,6 @@ const initialisePage = () => {
 
                 recordHistoryMessage(systemMessage);
                 appendChatBubble(systemMessage);
-
-                sendChatEvent('message_status', {
-                    status: 'error',
-                    direction: 'system',
-                    messageId: systemMessage.id,
-                    relatedTo: userMessage.id,
-                    error: error?.message ?? 'unknown-error',
-                }).catch((err) => logWebhookError('message_status', err));
             } finally {
                 hideTypingIndicator();
 
