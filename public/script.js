@@ -865,6 +865,12 @@ const initialisePage = () => {
                     {
                         messageId: userMessage.id,
                         message: userMessage.content,
+                        userMessage: {
+                            id: userMessage.id,
+                            role: userMessage.role,
+                            content: userMessage.content,
+                            timestamp: userMessage.timestamp,
+                        },
                         history: historyPayload,
                     },
                     { expectResponse: true, timeoutMs: 20000, throwOnError: true }
