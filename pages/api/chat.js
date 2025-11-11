@@ -24,6 +24,27 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
+  const resolveEvent = () => {
+    const queryEvent = req.query?.event;
+    if (typeof queryEvent === "string" && queryEvent.trim()) {
+      return queryEvent;
+    }
+    const bodyEvent = req.body && typeof req.body === "object" ? req.body.event : undefined;
+    if (typeof bodyEvent === "string" && bodyEvent.trim()) {
+      return bodyEvent;
+    }
+    return "conversation_ongoing";
+  };
+
+  const buildPayload = () => {
+    if (!req.body || typeof req.body !== "object") {
+      return { event: resolveEvent() };
+    }
+
+    const { event: _ignoredEvent, ...rest } = req.body;
+    return { event: resolveEvent(), ...rest };
+  };
+
   const { CHAT_WEBHOOK_URL, CHAT_BASIC_USER, CHAT_BASIC_PASS, CHAT_SHARED_SECRET } = process.env;
   if (!CHAT_WEBHOOK_URL || !CHAT_BASIC_USER || !CHAT_BASIC_PASS || !CHAT_SHARED_SECRET) {
     console.error("missing-env");
@@ -34,6 +55,7 @@ export default async function handler(req, res) {
     console.log("forwarding to webhook");
     const started = Date.now();
     const auth = Buffer.from(`${CHAT_BASIC_USER}:${CHAT_BASIC_PASS}`).toString("base64");
+    const payload = buildPayload();
     const n8nResp = await fetch(CHAT_WEBHOOK_URL, {
       method: "POST",
       headers: {
@@ -41,7 +63,7 @@ export default async function handler(req, res) {
         Authorization: `Basic ${auth}`,
         "X-Signature": CHAT_SHARED_SECRET,
       },
-      body: JSON.stringify(req.body ?? {}),
+      body: JSON.stringify(payload),
     });
     const contentType = n8nResp.headers.get("content-type") || "application/json; charset=utf-8";
     const text = await n8nResp.text();
