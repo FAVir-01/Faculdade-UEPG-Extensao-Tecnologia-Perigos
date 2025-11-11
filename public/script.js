@@ -16,6 +16,7 @@ const initialisePage = () => {
 
     let typingIndicatorBubble = null;
     let hasConversationStarted = false;
+    let conversationMetadata = {};
     let hasInitialAssistantMessage = false;
     let isSendingMessage = false;
     let messageSequence = 0;
@@ -323,7 +324,33 @@ const initialisePage = () => {
         updateEmptyState();
     };
 
-    const extractAssistantContent = (payload) => {
+    const preferredAssistantKeys = ['output', 'reply', 'message', 'text', 'content', 'response'];
+
+    function normaliseAssistantValue(value) {
+        if (value == null) {
+            return '';
+        }
+
+        if (typeof value === 'string') {
+            return value.trim();
+        }
+
+        if (Array.isArray(value)) {
+            const combined = value
+                .map((entry) => normaliseAssistantValue(entry))
+                .filter(Boolean);
+
+            return combined.join('\n').trim();
+        }
+
+        if (typeof value === 'object') {
+            return extractAssistantContent(value);
+        }
+
+        return String(value ?? '').trim();
+    }
+
+    function extractAssistantContent(payload) {
         if (payload == null) {
             return '';
         }
@@ -332,44 +359,76 @@ const initialisePage = () => {
             return payload.trim();
         }
 
+        if (Array.isArray(payload)) {
+            const combined = payload
+                .map((entry) => extractAssistantContent(entry))
+                .filter(Boolean);
+
+            return combined.join('\n').trim();
+        }
+
         if (typeof payload === 'object') {
-            const keys = ['output', 'reply', 'message', 'text', 'content', 'response'];
+            for (const key of preferredAssistantKeys) {
+                const normalised = normaliseAssistantValue(payload[key]);
 
-            for (const key of keys) {
-                const value = payload[key];
-
-                if (typeof value === 'string' && value.trim()) {
-                    return value.trim();
+                if (normalised) {
+                    return normalised;
                 }
             }
 
-            if (typeof payload.message === 'object' && payload.message !== null) {
-                return extractAssistantContent(payload.message);
+            for (const entryKey of Object.keys(payload)) {
+                if (preferredAssistantKeys.includes(entryKey.toLowerCase())) {
+                    const normalised = normaliseAssistantValue(payload[entryKey]);
+
+                    if (normalised) {
+                        return normalised;
+                    }
+                }
+            }
+
+            if (typeof payload.data !== 'undefined') {
+                const normalisedData = normaliseAssistantValue(payload.data);
+
+                if (normalisedData) {
+                    return normalisedData;
+                }
+            }
+
+            for (const key of Object.keys(payload)) {
+                const value = payload[key];
+
+                if (value && typeof value === 'object') {
+                    const nested = extractAssistantContent(value);
+
+                    if (nested) {
+                        return nested;
+                    }
+                }
             }
         }
 
-        return String(payload);
-    };
+        return String(payload ?? '').trim();
+    }
 
     const startConversation = (metadata = {}) => {
-        if (hasConversationStarted) {
-            return;
-        }
+        if (!hasConversationStarted) {
+            hasConversationStarted = true;
 
-        hasConversationStarted = true;
-
-        sendChatEvent(
-            'conversation_status',
-            {
-                status: 'conversation_started',
+            conversationMetadata = {
                 location: window.location.href,
                 userAgent: navigator.userAgent,
                 ...metadata,
-            },
-            { timeoutMs: 5000 }
-        ).catch((error) => {
-            logWebhookError('conversation_status', error);
-        });
+            };
+
+            return;
+        }
+
+        if (metadata && typeof metadata === 'object' && Object.keys(metadata).length > 0) {
+            conversationMetadata = {
+                ...metadata,
+                ...conversationMetadata,
+            };
+        }
     };
 
     const showHeroAnimationFallback = () => {
@@ -570,17 +629,6 @@ const initialisePage = () => {
 
     if (saibaMaisBtn) {
         saibaMaisBtn.addEventListener('click', () => {
-            sendChatEvent(
-                'saiba-mais-click',
-                {
-                    location: window.location.href,
-                    userAgent: navigator.userAgent,
-                },
-                { timeoutMs: 5000 }
-            ).catch((error) => {
-                logWebhookError('saiba-mais-click', error);
-            });
-
             startConversation({ origin: 'cta_click' });
 
             if (heroContent) {
@@ -626,26 +674,24 @@ const initialisePage = () => {
 
                 showTypingIndicator();
 
-                sendChatEvent('conversation_status', {
-                    status: 'assistant_typing',
-                    active: true,
-                }).catch((error) => logWebhookError('conversation_status', error));
-
                 try {
                     const historyPayload = conversationHistory.map((entry) => ({ ...entry }));
+                    const baseMetadata =
+                        conversationMetadata && Object.keys(conversationMetadata).length > 0
+                            ? conversationMetadata
+                            : {
+                                  location: window.location.href,
+                                  userAgent: navigator.userAgent,
+                              };
+
                     const responsePayload = await sendChatEvent(
                         'conversation_started',
                         {
+                            ...baseMetadata,
                             history: historyPayload,
-                            origin: 'cta_click',
                         },
                         { expectResponse: true, timeoutMs: 20000, throwOnError: true }
                     );
-
-                    sendChatEvent('conversation_status', {
-                        status: 'assistant_typing',
-                        active: false,
-                    }).catch((error) => logWebhookError('conversation_status', error));
 
                     const assistantRawText = extractAssistantContent(responsePayload);
                     const assistantText = assistantRawText || assistantFallbackMessage;
@@ -664,32 +710,8 @@ const initialisePage = () => {
 
                     hasInitialAssistantMessage = true;
 
-                    const inboundStatusPayload = {
-                        status: 'delivered',
-                        direction: 'inbound',
-                        messageId: assistantMessage.id,
-                        message: assistantMessage.content,
-                    };
-
-                    sendChatEvent('message_status', inboundStatusPayload).catch((error) =>
-                        logWebhookError('message_status', error)
-                    );
-
-                    const assistantResponsePayload = {
-                        messageId: assistantMessage.id,
-                        message: assistantMessage.content,
-                    };
-
-                    sendChatEvent('assistant_response', assistantResponsePayload).catch((error) =>
-                        logWebhookError('assistant_response', error)
-                    );
                 } catch (error) {
                     hideTypingIndicator();
-
-                    sendChatEvent('conversation_status', {
-                        status: 'assistant_typing',
-                        active: false,
-                    }).catch((err) => logWebhookError('conversation_status', err));
 
                     const systemMessage = {
                         id: generateMessageId('system'),
@@ -701,12 +723,6 @@ const initialisePage = () => {
                     recordHistoryMessage(systemMessage);
                     appendChatBubble(systemMessage);
 
-                    sendChatEvent('message_status', {
-                        status: 'error',
-                        direction: 'system',
-                        messageId: systemMessage.id,
-                        error: error?.message ?? 'unknown-error',
-                    }).catch((err) => logWebhookError('message_status', err));
                 } finally {
                     hideTypingIndicator();
 
