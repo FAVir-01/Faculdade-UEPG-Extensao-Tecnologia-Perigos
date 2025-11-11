@@ -21,12 +21,20 @@ curl -s https://SEU-APP.vercel.app/api/chat
 # {"ok":true}
 ```
 
-POST simples:
+POST simples (evento padrão `conversation_ongoing`):
 
 ```bash
 curl -i -X POST https://SEU-APP.vercel.app/api/chat \
   -H "Content-Type: application/json" \
   -d '{"ping":"ok"}'
+```
+
+Iniciando uma conversa (evento `conversation_started`):
+
+```bash
+curl -i -X POST "https://SEU-APP.vercel.app/api/chat?event=conversation_started" \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"Cliente"}'
 ```
 
 ## Desenvolvimento
