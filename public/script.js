@@ -24,6 +24,7 @@ const initialisePage = () => {
 
     const assistantFallbackMessage = 'Consegui registrar sua mensagem, mas não recebi uma resposta desta vez.';
     const assistantErrorMessage = 'Desculpe, ocorreu um problema ao obter a resposta. Tente novamente em instantes.';
+    const assistantTypingDurationMs = 6000;
 
     const ensureSessionId = () => {
         if (sessionId) {
@@ -249,7 +250,9 @@ const initialisePage = () => {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 
-    const appendChatBubble = (message) => {
+    const appendChatBubble = (message, options = {}) => {
+        const { skipContent = false } = options;
+
         if (!chatMessages) {
             return null;
         }
@@ -266,7 +269,11 @@ const initialisePage = () => {
         bubble.dataset.messageId = message.id;
         bubble.dataset.messageRole = message.role;
 
-        setBubbleContent(bubble, message.content);
+        if (skipContent) {
+            setBubbleContent(bubble, '');
+        } else {
+            setBubbleContent(bubble, message.content);
+        }
 
         chatMessages.appendChild(bubble);
 
@@ -279,6 +286,71 @@ const initialisePage = () => {
         updateEmptyState();
 
         return bubble;
+    };
+
+    const animateAssistantBubble = (bubble, fullText, options = {}) => {
+        if (!bubble) {
+            return () => {};
+        }
+
+        const { durationMs = assistantTypingDurationMs } = options;
+        const safeDuration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : assistantTypingDurationMs;
+        const text = typeof fullText === 'string' ? fullText : String(fullText ?? '');
+        const restoreSpeakingAnimation = activateSpeakingAnimation(safeDuration);
+
+        if (!text.length) {
+            setBubbleContent(bubble, '');
+            scrollChatToBottom();
+
+            const timeoutId = window.setTimeout(() => {
+                restoreSpeakingAnimation();
+            }, safeDuration);
+
+            return () => {
+                window.clearTimeout(timeoutId);
+                restoreSpeakingAnimation();
+            };
+        }
+
+        let animationFrameId = null;
+        const totalChars = text.length;
+        const startTime = typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now();
+
+        const updateContent = (content) => {
+            setBubbleContent(bubble, content);
+            scrollChatToBottom();
+        };
+
+        updateContent('');
+
+        const step = (timestamp) => {
+            const now = typeof timestamp === 'number' ? timestamp : (typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now());
+            const elapsed = now - startTime;
+            const progress = Math.min(1, elapsed / safeDuration);
+            const charCount = Math.max(0, Math.floor(progress * totalChars));
+            const partialText = text.slice(0, charCount);
+
+            updateContent(partialText);
+
+            if (progress < 1) {
+                animationFrameId = window.requestAnimationFrame(step);
+                return;
+            }
+
+            updateContent(text);
+            restoreSpeakingAnimation();
+        };
+
+        animationFrameId = window.requestAnimationFrame(step);
+
+        return () => {
+            if (animationFrameId !== null) {
+                window.cancelAnimationFrame(animationFrameId);
+            }
+
+            updateContent(text);
+            restoreSpeakingAnimation();
+        };
     };
 
     const showTypingIndicator = () => {
@@ -497,17 +569,20 @@ const initialisePage = () => {
     const defaultAnimationPath = getAnimationPath(heroAnim, 'data-animation-path', './animation.json');
     const neutralAnimationPath = getAnimationPath(heroAnim, 'data-neutral-animation-path', './animationNeutral.json');
     const thinkingAnimationPath = getAnimationPath(heroAnim, 'data-thinking-animation-path', './animationThinking.json');
+    const speakingAnimationPath = getAnimationPath(heroAnim, 'data-speaking-animation-path', './animationSpeaking.json');
 
     let heroAnimationInstance = null;
     let currentAnimationRequestId = 0;
     let activeHeroAnimationPath = null;
     let restoreHeroAnimationPath = null;
     let isThinkingAnimationActive = false;
+    let isSpeakingAnimationActive = false;
+    let speakingTimeoutId = null;
 
     const updateActiveHeroAnimationPath = (path) => {
         activeHeroAnimationPath = path;
 
-        if (path && path !== thinkingAnimationPath) {
+        if (path && path !== thinkingAnimationPath && path !== speakingAnimationPath) {
             restoreHeroAnimationPath = path;
         }
     };
@@ -516,6 +591,8 @@ const initialisePage = () => {
         if (!thinkingAnimationPath || isThinkingAnimationActive) {
             return;
         }
+
+        endSpeakingAnimation({ restore: false });
 
         const fallbackPath =
             (activeHeroAnimationPath && activeHeroAnimationPath !== thinkingAnimationPath
@@ -529,6 +606,21 @@ const initialisePage = () => {
         isThinkingAnimationActive = true;
 
         loadHeroAnimation(thinkingAnimationPath, { preserveCurrentAnimation: true });
+    };
+
+    const endSpeakingAnimation = ({ restore = true } = {}) => {
+        if (speakingTimeoutId !== null) {
+            window.clearTimeout(speakingTimeoutId);
+            speakingTimeoutId = null;
+        }
+
+        const shouldRestore = restore && isSpeakingAnimationActive;
+
+        isSpeakingAnimationActive = false;
+
+        if (shouldRestore) {
+            restoreHeroAnimationState({ force: true, preserveCurrentAnimation: true });
+        }
     };
 
     const restoreHeroAnimationState = (options = {}) => {
@@ -547,6 +639,31 @@ const initialisePage = () => {
         if (targetPath && targetPath !== thinkingAnimationPath) {
             loadHeroAnimation(targetPath, { preserveCurrentAnimation });
         }
+    };
+
+    const activateSpeakingAnimation = (durationMs = assistantTypingDurationMs) => {
+        const safeDuration = Number.isFinite(durationMs) && durationMs > 0 ? durationMs : assistantTypingDurationMs;
+
+        if (!speakingAnimationPath) {
+            endSpeakingAnimation({ restore: false });
+            return () => {};
+        }
+
+        endSpeakingAnimation({ restore: false });
+
+        isSpeakingAnimationActive = true;
+
+        loadHeroAnimation(speakingAnimationPath, { preserveCurrentAnimation: true });
+
+        const handleRestore = () => {
+            endSpeakingAnimation({ restore: true });
+        };
+
+        speakingTimeoutId = window.setTimeout(handleRestore, safeDuration);
+
+        return () => {
+            handleRestore();
+        };
     };
 
     const destroyHeroAnimation = () => {
@@ -776,7 +893,8 @@ const initialisePage = () => {
                     hideTypingIndicator();
 
                     recordHistoryMessage(assistantMessage);
-                    appendChatBubble(assistantMessage);
+                    const assistantBubble = appendChatBubble(assistantMessage, { skipContent: true });
+                    animateAssistantBubble(assistantBubble, assistantText, { durationMs: assistantTypingDurationMs });
 
                     hasInitialAssistantMessage = true;
 
@@ -890,7 +1008,8 @@ const initialisePage = () => {
                 };
 
                 recordHistoryMessage(assistantMessage);
-                appendChatBubble(assistantMessage);
+                const assistantBubble = appendChatBubble(assistantMessage, { skipContent: true });
+                animateAssistantBubble(assistantBubble, assistantText, { durationMs: assistantTypingDurationMs });
             } catch (error) {
                 hideTypingIndicator();
 
