@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuidado com as Telas</title>
+    <title>Rotina Digital Consciente</title>
     <link rel="icon" href="./imagemRobo.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --teal-primary: #00B5BF;
-            --teal-dark: #00838A;
-            --teal-deep: #00656A;
+            --teal-primary: #6366f1;
+            --teal-dark: #4338ca;
+            --teal-deep: #312e81;
+            --accent-warm: #f59e0b;
             --white: #fcfcfc;
-            --text-dark: #01363A;
-            --teal-tint: rgba(0, 181, 191, 0.08);
+            --text-dark: #1f2937;
+            --teal-tint: rgba(99, 102, 241, 0.08);
             --visual-max-width: 280px;
         }
 
@@ -101,7 +102,7 @@
             left: 0;
             right: 0;
             height: 50px;
-            background: linear-gradient(to bottom right, transparent 49%, rgba(0, 181, 191, 0.2) 50%);
+            background: linear-gradient(to bottom right, transparent 49%, rgba(99, 102, 241, 0.2) 50%);
         }
 
         .hero-container {
@@ -124,7 +125,7 @@
             content: '';
             position: absolute;
             z-index: 0;
-            background: rgba(0, 181, 191, 0.08);
+            background: rgba(99, 102, 241, 0.08);
             border-radius: 28px;
             filter: drop-shadow(0 28px 50px rgba(1, 54, 58, 0.08));
             animation: heroBubbleFloat 10s ease-in-out infinite;
@@ -298,7 +299,7 @@
         }
 
         .hero-chat .chat-messages::-webkit-scrollbar-thumb {
-            background: rgba(0, 181, 191, 0.35);
+            background: rgba(99, 102, 241, 0.35);
             border-radius: 999px;
         }
 
@@ -310,7 +311,7 @@
             padding: 18px 22px;
             border-radius: 24px;
             background: rgba(255, 255, 255, 0.95);
-            border: 1px dashed rgba(0, 181, 191, 0.3);
+            border: 1px dashed rgba(99, 102, 241, 0.3);
             box-shadow: 0 18px 40px rgba(1, 54, 58, 0.1);
             animation: floatHint 6s ease-in-out infinite;
             position: relative;
@@ -324,7 +325,7 @@
             width: 18px;
             height: 18px;
             background: rgba(255, 255, 255, 0.95);
-            border: 1px dashed rgba(0, 181, 191, 0.3);
+            border: 1px dashed rgba(99, 102, 241, 0.3);
             border-top: none;
             border-left: none;
             transform: rotate(45deg);
@@ -347,7 +348,7 @@
 
         .hero-chat .chat-input {
             flex: 1;
-            border: 1px solid rgba(0, 131, 138, 0.25);
+            border: 1px solid rgba(67, 56, 202, 0.25);
             border-radius: 20px;
             padding: 14px 18px;
             font-size: 1rem;
@@ -358,7 +359,7 @@
         .hero-chat .chat-input:focus {
             outline: none;
             border-color: var(--teal-primary);
-            box-shadow: 0 0 0 3px rgba(0, 181, 191, 0.18);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.18);
         }
 
         .hero-chat .chat-submit {
@@ -424,14 +425,14 @@
             align-self: flex-start;
             background: var(--white, #fcfcfc);
             color: var(--text-dark);
-            border: 1px solid rgba(0, 131, 138, 0.22);
+            border: 1px solid rgba(67, 56, 202, 0.22);
         }
 
         .hero-chat .chat-bubble-assistant::after {
             left: 36px;
-            border-top: 1px solid rgba(0, 131, 138, 0.22);
-            border-left: 1px solid rgba(0, 131, 138, 0.22);
-            box-shadow: 14px 14px 36px rgba(1, 54, 58, 0.12);
+            border-top: 1px solid rgba(67, 56, 202, 0.22);
+            border-left: 1px solid rgba(67, 56, 202, 0.22);
+            box-shadow: 14px 14px 36px rgba(49, 46, 129, 0.12);
         }
 
         .hero-chat .chat-bubble-user {
@@ -446,23 +447,23 @@
             right: 28px;
             border-right: none;
             border-bottom: none;
-            box-shadow: 10px 10px 30px rgba(0, 101, 106, 0.2);
+            box-shadow: 10px 10px 30px rgba(49, 46, 129, 0.2);
         }
 
         .hero-chat .chat-bubble-system {
             align-self: center;
             background: rgba(255, 255, 255, 0.94);
             color: var(--teal-dark);
-            border: 1px dashed rgba(0, 181, 191, 0.4);
+            border: 1px dashed rgba(99, 102, 241, 0.4);
         }
 
         .hero-chat .chat-bubble-system::after {
             left: 50%;
             transform: translateX(-50%) rotate(45deg);
-            border: 1px dashed rgba(0, 181, 191, 0.4);
+            border: 1px dashed rgba(99, 102, 241, 0.4);
             border-top: none;
             border-left: none;
-            box-shadow: 12px 12px 30px rgba(0, 131, 138, 0.18);
+            box-shadow: 12px 12px 30px rgba(67, 56, 202, 0.18);
         }
 
         .hero-chat .typing-indicator {
@@ -632,11 +633,11 @@
         }
 
         .section-white::after {
-            background: linear-gradient(to bottom right, var(--white, #fcfcfc) 49%, rgba(0, 181, 191, 0.15) 50%);
+            background: linear-gradient(to bottom right, var(--white, #fcfcfc) 49%, rgba(99, 102, 241, 0.15) 50%);
         }
 
         .section-teal-tint::after {
-            background: linear-gradient(to bottom right, rgba(0, 181, 191, 0.15) 49%, var(--white, #fcfcfc) 50%);
+            background: linear-gradient(to bottom right, rgba(99, 102, 241, 0.15) 49%, var(--white, #fcfcfc) 50%);
         }
 
         /* Introduction Section */
@@ -816,7 +817,7 @@
             margin-bottom: 20px;
             color: var(--teal-dark);
             padding-bottom: 10px;
-            border-bottom: 2px solid var(--teal-primary);
+            border-bottom: 2px solid var(--accent-warm);
         }
 
         .activity-category ul {
@@ -826,6 +827,39 @@
         .activity-category li {
             margin-bottom: 10px;
             position: relative;
+        }
+
+        .activities-cta {
+            margin-top: 24px;
+            background: var(--teal-tint);
+            border-left: 4px solid var(--accent-warm);
+            padding: 18px 22px;
+            border-radius: 12px;
+            font-weight: 500;
+            color: var(--teal-dark);
+        }
+
+        .brief-card {
+            margin-top: 30px;
+            padding: 22px 24px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(245, 158, 11, 0.12));
+            box-shadow: 0 6px 14px rgba(49, 46, 129, 0.12);
+        }
+
+        .brief-card strong {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--teal-dark);
+            margin-bottom: 12px;
+        }
+
+        .brief-card ul {
+            margin-left: 18px;
+        }
+
+        .brief-card li {
+            margin-bottom: 8px;
         }
 
         /* About Section */
@@ -1086,7 +1120,7 @@
     <!-- Header -->
     <header>
         <div class="container">
-            <h1>CUIDADO COM AS TELAS</h1>
+            <h1>ROTINA DIGITAL CONSCIENTE</h1>
         </div>
     </header>
 
@@ -1095,11 +1129,11 @@
         <div class="container">
             <ul>
                 <li><a href="#">Início</a></li>
-                <li><a href="#introducao">Campanha</a></li>
-                <li><a href="#riscos">Riscos</a></li>
-                <li><a href="#dicas">Dicas</a></li>
+                <li><a href="#introducao">Visão</a></li>
+                <li><a href="#riscos">Padrões</a></li>
+                <li><a href="#dicas">Protocolos</a></li>
                 <li><a href="#atividades">Atividades</a></li>
-                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#sobre">Referências</a></li>
             </ul>
         </div>
     </nav>
@@ -1108,15 +1142,15 @@
     <section class="hero">
         <div class="container hero-container" id="heroContainer">
             <div class="hero-content animate-on-scroll" id="heroContent">
-                <h2>"Excesso de telas pode roubar o que a infância tem de melhor."</h2>
-                <p>Bem-vindo à campanha "Cuidado com as Telas", uma iniciativa para conscientizar sobre os riscos do uso excessivo de dispositivos digitais por crianças e oferecer soluções práticas para pais e educadores.</p>
-                <button type="button" class="btn" id="saibaMaisBtn">Saiba mais</button>
+                <h2>Protocolos digitais para cuidar da atenção, do sono e da autoria.</h2>
+                <p>Bem-vindo ao projeto Rotina Digital Consciente, inspirado nas pesquisas de Michel Desmurget, Nicholas Carr e Cal Newport. Organizamos o uso das telas por crianças e adolescentes com foco em padrões de risco, protocolos de 14 dias e um procedimento mínimo de IA na escola.</p>
+                <button type="button" class="btn" id="saibaMaisBtn">Abrir o assistente de rotinas</button>
             </div>
             <div class="hero-chat hidden" id="heroChat" aria-live="polite">
                 <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-relevant="additions text">
                     <div class="chat-empty" id="chatEmpty">
-                        <strong>Converse com o nosso robozinho.</strong>
-                        Escreva a primeira mensagem e veja como ele responde no seu ritmo.
+                        <strong>Peça um roteiro rápido.</strong>
+                        Conte ao assistente o perfil da criança ou da turma e receba planos personalizados de estudo, descanso e uso de IA.
                     </div>
                 </div>
                 <form class="chat-form" id="chatForm" novalidate>
@@ -1135,10 +1169,10 @@
                     data-thinking-animation-path="./animationThinking.json"
                     data-speaking-animation-path="./animationSpeaking.json"
                     role="img"
-                    aria-label="Animação ilustrativa da campanha Cuidado com as Telas"
+                    aria-label="Animação ilustrativa do projeto Rotina Digital Consciente"
                 ></div>
                 <div id="heroAnimationFallback" class="hero-animation-fallback hidden">
-                    <img src="./imagemRobo.png" alt="Ilustração de um robô representando a campanha Cuidado com as Telas" loading="lazy">
+                    <img src="./imagemRobo.png" alt="Ilustração de um robô representando o projeto Rotina Digital Consciente" loading="lazy">
                 </div>
             </div>
         </div>
@@ -1147,16 +1181,16 @@
     <!-- Introduction Section -->
     <section id="introducao" class="section-teal-tint">
         <div class="container">
-            <h2>Nossa Campanha</h2>
-            
+            <h2>Nossa visão</h2>
+
             <div class="intro-content">
                 <div class="intro-text animate-on-scroll">
-                    <p>A campanha "Cuidado com as Telas" nasceu da preocupação com o crescente tempo que crianças passam em frente a dispositivos digitais. Nosso objetivo é informar pais, responsáveis e educadores sobre os impactos negativos do uso excessivo de telas e oferecer estratégias práticas para um uso mais equilibrado e saudável da tecnologia.</p>
-                    <p>Não se trata de demonizar a tecnologia, que traz inúmeros benefícios quando usada adequadamente, mas sim de promover um uso consciente e moderado, especialmente durante a infância, fase crucial para o desenvolvimento físico, cognitivo e socioemocional.</p>
-                    <p>Neste site, você encontrará informações detalhadas sobre os riscos do uso excessivo de telas, dicas práticas para equilibrar o uso de dispositivos digitais e sugestões de atividades alternativas para crianças.</p>
+                    <p>Reorientamos o trabalho: saímos do alerta genérico sobre “malefícios das telas” e passamos a mapear como padrões específicos — interrupções constantes, consumo passivo, uso noturno e delegação cega à IA — sabotam atenção, sono e aprendizagem de crianças e adolescentes.</p>
+                    <p>Inspirados por <em>A Fábrica de Cretinos Digitais</em> (Michel Desmurget), <em>The Shallows</em> (Nicholas Carr) e <em>Digital Minimalism</em> (Cal Newport), estruturamos quatro pilares: identificar padrões de risco, adotar um procedimento mínimo para trabalhos com IA, testar protocolos de 14 dias e propor atividades analógicas organizadas em “Explorar, Criar e Conviver”.</p>
+                    <p>Use o chatbot para transformar esses pilares em rotinas reais: descreva o contexto da turma ou da família e receba planos personalizados com checagem de fontes, leitura profunda e tempo protegido de sono.</p>
                 </div>
                 <div class="intro-image animate-on-scroll">
-                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%2014%20de%20abr.%20de%202025%2C%2013_18_49-nwOeRKFqw06JSNpzzbyhAMLe8SYy1x.png" alt="Panfleto da campanha Cuidado com as Telas">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%2014%20de%20abr.%20de%202025%2C%2013_18_49-nwOeRKFqw06JSNpzzbyhAMLe8SYy1x.png" alt="Cartaz do projeto Rotina Digital Consciente">
                 </div>
             </div>
         </div>
@@ -1165,7 +1199,7 @@
     <!-- Risks Section -->
     <section id="riscos" class="section-white">
         <div class="container">
-            <h2>Os riscos do uso excessivo de telas</h2>
+            <h2>Padrões de uso que exigem atenção</h2>
 
             <div class="risks-grid">
                 <div class="risk-item animate-on-scroll">
@@ -1174,16 +1208,15 @@
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                     <div class="risk-content">
-                        <h3>Desenvolvimento prejudicado</h3>
-                        <p>O uso excessivo de telas pode comprometer significativamente o desenvolvimento infantil em várias áreas:</p>
+                        <h3>Quebra de foco constante</h3>
+                        <p>Ambientes digitais cheios de notificações fragmentam a atenção e tornam a leitura profunda mais rara, como alerta Nicholas Carr em <em>The Shallows</em>.</p>
                         <ul>
-                            <li>Redução da capacidade de concentração e atenção</li>
-                            <li>Diminuição da criatividade e imaginação</li>
-                            <li>Atraso no desenvolvimento da linguagem</li>
-                            <li>Dificuldades de aprendizagem</li>
-                            <li>Menor desenvolvimento de habilidades motoras finas</li>
+                            <li>Alertas a cada poucos minutos impedem ciclos de estudo de 30 minutos.</li>
+                            <li>Trocas rápidas entre apps reduzem retenção de conteúdo em sala.</li>
+                            <li>Pesquisas viram copiar e colar, sem análise ou autoria.</li>
+                            <li>Tarefas simples passam a exigir supervisão constante.</li>
                         </ul>
-                        <p>Estudos mostram que crianças que passam muito tempo em dispositivos digitais têm menos oportunidades de desenvolver habilidades cruciais através de brincadeiras livres e interações face a face.</p>
+                        <p>O protocolo Foco 30-5 cria janelas protegidas para leitura, escrita e revisão com direito a pausas curtas e intencionais.</p>
                     </div>
                 </div>
 
@@ -1193,16 +1226,15 @@
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                     <div class="risk-content">
-                        <h3>Sono afetado</h3>
-                        <p>A exposição às telas pode prejudicar significativamente a qualidade do sono das crianças:</p>
+                        <h3>Consumo passivo e feed infinito</h3>
+                        <p>Quando a tela define o ritmo com autoplay e rolagem infinita, sobra pouca energia para brincar, ler e criar, alerta Michel Desmurget em <em>A Fábrica de Cretinos Digitais</em>.</p>
                         <ul>
-                            <li>A luz azul emitida pelos dispositivos suprime a produção de melatonina, hormônio do sono</li>
-                            <li>Conteúdos estimulantes antes de dormir aumentam a excitação mental</li>
-                            <li>Uso noturno de dispositivos está associado a menos horas de sono</li>
-                            <li>Crianças com TVs ou dispositivos nos quartos dormem em média 30 minutos menos por noite</li>
-                            <li>Sono inadequado afeta o humor, comportamento e desempenho escolar</li>
+                            <li>Vídeos e shorts automáticos prolongam o tempo de tela sem intenção.</li>
+                            <li>Publicidade embutida reforça desejos imediatos e impulsos de compra.</li>
+                            <li>O cérebro entra em modo espectador, reduzindo vocabulário e repertório.</li>
+                            <li>O hábito de “rolar para relaxar” substitui descanso ativo e convivência.</li>
                         </ul>
-                        <p>Um sono de qualidade é fundamental para o desenvolvimento cerebral, crescimento físico e bem-estar emocional das crianças.</p>
+                        <p>Desligar autoplay, planejar playlists educativas e alternar com atividades físicas devolve protagonismo às crianças.</p>
                     </div>
                 </div>
 
@@ -1212,16 +1244,15 @@
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                     <div class="risk-content">
-                        <h3>Menos contato social</h3>
-                        <p>O tempo excessivo em frente às telas reduz as oportunidades de interação social presencial, essencial para o desenvolvimento:</p>
+                        <h3>Tela noturna e sono bagunçado</h3>
+                        <p>Michel Desmurget reúne evidências de que luz azul e estímulos noturnos derrubam a produção de melatonina e atrasam o relógio biológico infantil.</p>
                         <ul>
-                            <li>Diminuição da capacidade de interpretar expressões faciais e linguagem corporal</li>
-                            <li>Menor desenvolvimento de habilidades de comunicação verbal</li>
-                            <li>Redução da empatia e compreensão das emoções alheias</li>
-                            <li>Dificuldades em resolver conflitos interpessoais</li>
-                            <li>Isolamento social e potencial para dependência digital</li>
+                            <li>Jogos e vídeos antes de dormir elevam a excitação mental.</li>
+                            <li>Dispositivos no quarto reduzem em média 30 minutos de sono.</li>
+                            <li>Noites picadas geram irritação, impulsividade e queda no desempenho.</li>
+                            <li>Sem repouso profundo o cérebro não consolida novas aprendizagens.</li>
                         </ul>
-                        <p>As interações face a face são insubstituíveis para o desenvolvimento de habilidades sociais saudáveis.</p>
+                        <p>O protocolo Sono −60 garante uma hora livre de telas, luz morna e rituais de desaceleração para recuperar a qualidade do descanso.</p>
                     </div>
                 </div>
 
@@ -1231,35 +1262,15 @@
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                     <div class="risk-content">
-                        <h3>Mais ansiedade e irritação</h3>
-                        <p>O uso excessivo de telas está associado a problemas de saúde mental e comportamental:</p>
+                        <h3>Delegar tudo à IA</h3>
+                        <p>Sem uma mediação humana clara, assistentes de IA viram muleta e substituem o raciocínio próprio — o oposto do uso intencional proposto por Cal Newport em <em>Digital Minimalism</em>.</p>
                         <ul>
-                            <li>Aumento dos níveis de ansiedade e estresse</li>
-                            <li>Maior irritabilidade e comportamentos explosivos</li>
-                            <li>Dificuldade em lidar com a frustração e adiar gratificações</li>
-                            <li>Sintomas de abstinência quando os dispositivos são removidos</li>
-                            <li>Maior risco de depressão em adolescentes com uso intensivo de redes sociais</li>
+                            <li>Resumos prontos sem checagem perpetuam erros e desinformação.</li>
+                            <li>Perde-se autoria e repertório de escrita quando a IA entrega o texto final.</li>
+                            <li>Estudantes deixam de confrontar fontes e argumentos divergentes.</li>
+                            <li>Competências socioemocionais enfraquecem quando a IA resolve conflitos.</li>
                         </ul>
-                        <p>O estímulo constante e a natureza viciante de muitos aplicativos e jogos podem sobrecarregar o sistema nervoso em desenvolvimento das crianças.</p>
-                    </div>
-                </div>
-
-                <div class="risk-item animate-on-scroll">
-                    <svg class="risk-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                    </svg>
-                    <div class="risk-content">
-                        <h3>Problemas físicos</h3>
-                        <p>O tempo excessivo em dispositivos digitais está associado a diversos problemas de saúde física:</p>
-                        <ul>
-                            <li>Sedentarismo e aumento do risco de obesidade infantil</li>
-                            <li>Problemas posturais e dores nas costas, pescoço e ombros</li>
-                            <li>Fadiga visual, olhos secos e potenciais danos à visão</li>
-                            <li>Síndrome do túnel do carpo e tendinites em casos graves</li>
-                            <li>Menor desenvolvimento de habilidades motoras grossas</li>
-                        </ul>
-                        <p>Crianças em fase de crescimento são particularmente vulneráveis a esses problemas físicos, que podem ter consequências a longo prazo.</p>
+                        <p>O procedimento mínimo de IA — compreender, verificar, produzir com autoria e citar — devolve protagonismo ao estudante e transforma a tecnologia em aliada.</p>
                     </div>
                 </div>
             </div>
@@ -1269,78 +1280,50 @@
     <!-- Tips Section -->
     <section id="dicas" class="section-teal-tint">
         <div class="container">
-            <h2>O que fazer para equilibrar o uso de telas</h2>
+            <h2>Protocolos práticos de 14 dias</h2>
 
             <div class="tips-grid">
                 <div class="tip-item animate-on-scroll">
-                    <h3>Estabeleça limites claros</h3>
-                    <p>Defina regras consistentes sobre o uso de dispositivos digitais:</p>
+                    <h3>Foco 30-5</h3>
+                    <p>Ciclos de atenção profunda inspirados nos alertas de Nicholas Carr sobre leitura superficial.</p>
                     <ul>
-                        <li>Estabeleça horários específicos para o uso de telas</li>
-                        <li>Crie zonas livres de telas em casa (quartos, mesa de jantar)</li>
-                        <li>Defina um tempo máximo diário de acordo com a idade</li>
-                        <li>Use temporizadores para ajudar as crianças a entenderem os limites</li>
-                        <li>Mantenha-se firme com as regras estabelecidas</li>
+                        <li>Proteja 30 minutos sem notificações para leitura, resolução de problemas ou escrita.</li>
+                        <li>Use 5 minutos para respirar, alongar e registrar o que foi aprendido.</li>
+                        <li>Repita o ciclo três vezes por dia para reconstruir resistência de foco.</li>
+                        <li>Inclua metas de autoria própria antes de recorrer à IA.</li>
                     </ul>
                 </div>
 
                 <div class="tip-item animate-on-scroll">
-                    <h3>Ofereça alternativas</h3>
-                    <p>Incentive atividades que não envolvam telas:</p>
+                    <h3>Sono −60</h3>
+                    <p>Rotina de desaceleração alinhada às evidências compiladas por Michel Desmurget.</p>
                     <ul>
-                        <li>Tenha livros, jogos de tabuleiro e brinquedos facilmente acessíveis</li>
-                        <li>Planeje atividades ao ar livre regularmente</li>
-                        <li>Inscreva as crianças em atividades esportivas ou artísticas</li>
-                        <li>Promova brincadeiras que estimulem a criatividade</li>
-                        <li>Crie uma caixa de "estou entediado" com ideias de atividades</li>
+                        <li>Desligue telas 60 minutos antes de dormir e troque por leitura física ou áudio tranquilo.</li>
+                        <li>Abaixe a iluminação, preferindo tons quentes para sinalizar descanso ao corpo.</li>
+                        <li>Deixe materiais escolares e roupas prontos para evitar correria com celular ao acordar.</li>
+                        <li>Registre no diário do sono como a energia muda ao longo dos 14 dias.</li>
                     </ul>
                 </div>
 
                 <div class="tip-item animate-on-scroll">
-                    <h3>Dê o exemplo</h3>
-                    <p>As crianças aprendem observando os adultos:</p>
+                    <h3>Feed sob controle</h3>
+                    <p>Minimalismo digital aplicado: cada app precisa servir a um objetivo claro, como defende Cal Newport.</p>
                     <ul>
-                        <li>Monitore seu próprio uso de dispositivos eletrônicos</li>
-                        <li>Evite usar o celular durante as refeições e conversas</li>
-                        <li>Demonstre interesse por atividades não-digitais</li>
-                        <li>Fale sobre a importância de equilibrar o tempo de tela</li>
-                        <li>Participe de "desintoxicações digitais" em família</li>
+                        <li>Desative autoplay, notificações push e recomendações infinitas.</li>
+                        <li>Curadoria semanal: mantenha apenas canais e jogos que apoiam metas de estudo ou lazer saudável.</li>
+                        <li>Combine horários de check-in com responsáveis e mantenha o aparelho fora do quarto.</li>
+                        <li>Recorra às listas Explorar/Criar/Conviver quando surgir a vontade de “rolar por rolar”.</li>
                     </ul>
                 </div>
 
                 <div class="tip-item animate-on-scroll">
-                    <h3>Monitore o conteúdo</h3>
-                    <p>Nem todo tempo de tela é igual:</p>
+                    <h3>Procedimento mínimo de IA</h3>
+                    <p>Transforme a IA em ferramenta de aprendizagem ao invés de atalho.</p>
                     <ul>
-                        <li>Conheça os aplicativos, jogos e programas que seus filhos utilizam</li>
-                        <li>Priorize conteúdos educativos e interativos</li>
-                        <li>Use controles parentais quando apropriado</li>
-                        <li>Assista e jogue junto com as crianças quando possível</li>
-                        <li>Converse sobre o que eles veem e experimentam online</li>
-                    </ul>
-                </div>
-
-                <div class="tip-item animate-on-scroll">
-                    <h3>Crie rotinas saudáveis</h3>
-                    <p>Estruture o dia para incluir diversos tipos de atividades:</p>
-                    <ul>
-                        <li>Estabeleça horários regulares para refeições, sono e atividades</li>
-                        <li>Inclua tempo para brincadeiras livres todos os dias</li>
-                        <li>Evite telas pelo menos uma hora antes de dormir</li>
-                        <li>Planeje momentos de conexão familiar sem dispositivos</li>
-                        <li>Reserve tempo para atividade física diária</li>
-                    </ul>
-                </div>
-
-                <div class="tip-item animate-on-scroll">
-                    <h3>Comunique-se abertamente</h3>
-                    <p>Mantenha diálogo constante sobre o uso de tecnologia:</p>
-                    <ul>
-                        <li>Explique os motivos por trás das regras de uso de telas</li>
-                        <li>Converse sobre os benefícios e riscos da tecnologia</li>
-                        <li>Ensine sobre cidadania digital e segurança online</li>
-                        <li>Esteja aberto para ajustar as regras conforme necessário</li>
-                        <li>Elogie quando as crianças respeitam os limites estabelecidos</li>
+                        <li><strong>Compreender:</strong> leia o enunciado, destaque o que já sabe e formule dúvidas.</li>
+                        <li><strong>Verificar fontes:</strong> peça referências confiáveis e valide com livros ou professores.</li>
+                        <li><strong>Produzir com autoria:</strong> escreva a sua versão, registrando decisões e argumentos.</li>
+                        <li><strong>Citar o uso:</strong> explicite onde a IA ajudou e quais trechos foram revisados manualmente.</li>
                     </ul>
                 </div>
             </div>
@@ -1350,80 +1333,77 @@
     <!-- Activities Section -->
     <section id="atividades" class="section-white">
         <div class="container">
-            <h2>Atividades alternativas às telas</h2>
+            <h2>Explorar, criar e conviver fora das telas</h2>
 
             <div class="activities-container">
                 <div class="activity-category animate-on-scroll">
-                    <h3>Atividades ao ar livre</h3>
+                    <h3>Explorar</h3>
                     <ul>
-                        <li>Andar de bicicleta, patins ou skate</li>
-                        <li>Brincar em parques e praças</li>
-                        <li>Fazer piqueniques em família</li>
-                        <li>Praticar esportes como futebol, vôlei ou basquete</li>
-                        <li>Explorar trilhas e fazer caminhadas</li>
-                        <li>Plantar e cuidar de um pequeno jardim</li>
-                        <li>Brincar com água (piscinas, sprinklers, balões d'água)</li>
-                        <li>Fazer caça ao tesouro ao ar livre</li>
+                        <li>Mapear uma rota segura a pé ou de bicicleta pela vizinhança.</li>
+                        <li>Montar uma trilha sensorial com cheiros, texturas e sons do bairro.</li>
+                        <li>Observar o céu noturno com aplicativos offline e registrar constelações.</li>
+                        <li>Investigar a história do bairro entrevistando comerciantes e moradores.</li>
+                        <li>Fazer mutirões de jardinagem ou hortas em vasos na escola.</li>
+                        <li>Organizar expedições fotográficas utilizando câmeras simples descartáveis.</li>
                     </ul>
                 </div>
 
                 <div class="activity-category animate-on-scroll">
-                    <h3>Atividades criativas</h3>
+                    <h3>Criar</h3>
                     <ul>
-                        <li>Desenhar, pintar e colorir</li>
-                        <li>Modelar com massinha ou argila</li>
-                        <li>Fazer artesanato com materiais recicláveis</li>
-                        <li>Criar histórias e peças teatrais</li>
-                        <li>Aprender a tocar um instrumento musical</li>
-                        <li>Fazer experimentos científicos simples</li>
-                        <li>Construir com blocos e peças de montar</li>
-                        <li>Criar álbuns de fotos ou scrapbooks</li>
+                        <li>Escrever cartas ou zines semanais compartilhando descobertas da leitura.</li>
+                        <li>Produzir podcasts analógicos: roteiro no papel, gravação e edição com supervisão.</li>
+                        <li>Construir máquinas de Rube Goldberg com materiais reciclados.</li>
+                        <li>Montar oficinas de música corporal e percussão com objetos do cotidiano.</li>
+                        <li>Desenhar storyboards para vídeos curtos antes de ligar a câmera.</li>
+                        <li>Criar clubes de escrita que combinam a técnica Foco 30-5 com revisão em dupla.</li>
                     </ul>
                 </div>
 
                 <div class="activity-category animate-on-scroll">
-                    <h3>Atividades em família</h3>
+                    <h3>Conviver</h3>
                     <ul>
-                        <li>Jogar jogos de tabuleiro e cartas</li>
-                        <li>Cozinhar e assar juntos</li>
-                        <li>Ler livros em voz alta</li>
-                        <li>Fazer noites de cinema com filmes apropriados</li>
-                        <li>Organizar caças ao tesouro dentro de casa</li>
-                        <li>Montar quebra-cabeças</li>
-                        <li>Fazer passeios culturais a museus e exposições</li>
-                        <li>Praticar esportes em família</li>
-                    </ul>
-                </div>
-
-                <div class="activity-category animate-on-scroll">
-                    <h3>Atividades educativas</h3>
-                    <ul>
-                        <li>Visitar bibliotecas e participar de clubes de leitura</li>
-                        <li>Fazer experimentos científicos simples</li>
-                        <li>Aprender sobre diferentes culturas e países</li>
-                        <li>Praticar um novo idioma</li>
-                        <li>Visitar museus e centros de ciências</li>
-                        <li>Criar projetos de pesquisa sobre temas de interesse</li>
-                        <li>Aprender habilidades práticas como costura ou marcenaria</li>
-                        <li>Participar de oficinas e cursos extracurriculares</li>
+                        <li>Promover noites de jogos de tabuleiro sem celulares na mesa.</li>
+                        <li>Organizar círculos de conversa sobre conquistas e dificuldades da semana.</li>
+                        <li>Preparar refeições coletivas com tarefas distribuídas por faixa etária.</li>
+                        <li>Planejar grupos de estudo com turnos de 30-5 e momentos de socialização.</li>
+                        <li>Realizar rodas de leitura com textos impressos e comentários a lápis.</li>
+                        <li>Convidar avós e vizinhos para oficinas de habilidades (tricô, marcenaria, contação de histórias).</li>
                     </ul>
                 </div>
             </div>
+
+            <p class="activities-cta">Peça ao chatbot para combinar essas atividades em agendas semanais: descreva idade, horário disponível e objetivo, e receba roteiros ajustados para a realidade da sua turma ou família.</p>
         </div>
     </section>
 
     <!-- About Section -->
     <section id="sobre" class="section-teal-tint">
         <div class="container">
-            <h2>Sobre o projeto</h2>
+            <h2>Referências e bastidores</h2>
 
             <div class="about-content animate-on-scroll">
-                <p>A campanha "Cuidado com as Telas" é uma iniciativa de conscientização sobre os malefícios do uso excessivo de telas digitais por crianças. Nosso objetivo é informar pais, responsáveis e educadores sobre os riscos físicos, emocionais e sociais do uso excessivo de dispositivos digitais na infância, além de oferecer orientações sobre como promover um uso equilibrado.</p>
-                <p>Este projeto foi desenvolvido como parte das atividades acadêmicas dos estudantes da Universidade Estadual de Ponta Grossa (UEPG), com o intuito de contribuir para a saúde e bem-estar das crianças em nossa comunidade.</p>
-                <p>Acreditamos que a tecnologia pode ser uma ferramenta valiosa quando usada de forma consciente e equilibrada. Nossa missão é ajudar famílias a encontrarem esse equilíbrio, garantindo que as crianças possam desfrutar dos benefícios da tecnologia sem comprometer seu desenvolvimento saudável.</p>
+                <p>O Rotina Digital Consciente é fruto das atividades de extensão da UEPG e nasce para orientar famílias, escolas e projetos sociais a usarem telas com intenção — não como passatempo automático. O foco está em crianças e adolescentes, fases em que atenção, sono e aprendizagem precisam de proteção ativa.</p>
+                <p>Nossa metodologia combina as evidências reunidas por Michel Desmurget, Nicholas Carr e Cal Newport com práticas de sala de aula. O resultado são protocolos de 14 dias, um roteiro mínimo de uso da IA e uma curadoria de atividades presenciais.</p>
+                <h3>Base bibliográfica essencial</h3>
+                <ul>
+                    <li><strong>Michel Desmurget — A Fábrica de Cretinos Digitais:</strong> embasa limites claros para tempo recreativo e reforça o cuidado com sono e linguagem.</li>
+                    <li><strong>Nicholas Carr — The Shallows:</strong> inspira a criação de ambientes sem interrupções para recuperar leitura profunda e pensamento crítico.</li>
+                    <li><strong>Cal Newport — Digital Minimalism:</strong> orienta a diferença entre ferramenta e muleta, guiando o protocolo de declutter e o uso intencional da IA.</li>
+                </ul>
+                <p>Cada seção do site se conecta a esses autores: mapeamos padrões de risco, descrevemos protocolos de foco e sono, e oferecemos atividades analógicas que reforçam a convivência e a autoria.</p>
             </div>
 
-            <h3 class="team-title">Nossa equipe</h3>
+            <div class="brief-card animate-on-scroll">
+                <strong>Brief rápido para implementação criativa</strong>
+                <ul>
+                    <li>Transformar os protocolos Foco 30-5, Sono −60 e Feed sob controle em componentes interativos com acompanhamento diário.</li>
+                    <li>Incluir no chatbot perguntas sobre contexto (idade, escola, desafios) antes de sugerir rotinas.</li>
+                    <li>Criar indicadores visuais que mostrem progresso nos 14 dias e reforcem a citação do uso de IA.</li>
+                </ul>
+            </div>
+
+            <h3 class="team-title">Equipe</h3>
             <div class="team-grid">
                 <div class="team-member animate-on-scroll">
                     <p>Felipe Vieira</p>
@@ -1442,8 +1422,8 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <h2>CUIDADO COM AS TELAS</h2>
-                    <p>Uma campanha de conscientização da UEPG</p>
+                    <h2>ROTINA DIGITAL CONSCIENTE</h2>
+                    <p>Protocolos práticos da UEPG para um uso intencional das telas</p>
                 </div>
 
                 <div class="footer-contact">
@@ -1453,7 +1433,7 @@
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                             <polyline points="22,6 12,13 2,6"></polyline>
                         </svg>
-                        <a href="mailto:cuidadocomastelas@uepg.br">cuidadocomastelas@uepg.br</a>
+                        <a href="mailto:rotinadigital@uepg.br">rotinadigital@uepg.br</a>
                     </div>
                     <div class="social-links">
                         <a href="#">
@@ -1473,7 +1453,7 @@
             </div>
 
             <div class="footer-bottom">
-                <p>&copy; 2025 Campanha Cuidado com as Telas - Todos os direitos reservados</p>
+                <p>&copy; 2025 Rotina Digital Consciente - Protocolos de extensão UEPG</p>
             </div>
         </div>
     </footer>
@@ -1497,7 +1477,7 @@
                         <line x1="12" y1="9" x2="12" y2="13"></line>
                         <line x1="12" y1="17" x2="12.01" y2="17"></line>
                     </svg>
-                    Riscos
+                    Padrões
                 </a>
             </li>
             <li>
@@ -1506,7 +1486,7 @@
                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                         <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                     </svg>
-                    Dicas
+                    Protocolos
                 </a>
             </li>
             <li>
@@ -1516,7 +1496,7 @@
                         <line x1="12" y1="16" x2="12" y2="12"></line>
                         <line x1="12" y1="8" x2="12.01" y2="8"></line>
                     </svg>
-                    Sobre
+                    Referências
                 </a>
             </li>
         </ul>
