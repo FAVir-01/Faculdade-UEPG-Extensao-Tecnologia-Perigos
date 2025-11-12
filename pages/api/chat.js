@@ -9,6 +9,15 @@ function setCors(req, res) {
   res.setHeader("Access-Control-Max-Age", "86400");
 }
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "5mb",
+    },
+    responseLimit: false,
+  },
+};
+
 export default async function handler(req, res) {
   setCors(req, res);
 
