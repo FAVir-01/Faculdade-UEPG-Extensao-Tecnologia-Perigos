@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuidado com as Telas</title>
+    <link rel="icon" href="./imagemRobo.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal-primary: #00B5BF;
+            --teal-dark: #00838A;
+            --teal-deep: #00656A;
+            --white: #fcfcfc;
+            --text-dark: #01363A;
+            --teal-tint: rgba(0, 181, 191, 0.08);
+            --visual-max-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: var(--white, #fcfcfc);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--teal-primary);
+            color: var(--white);
+            padding: 24px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        nav.main-nav {
+            background-color: var(--teal-dark);
+            padding: 10px 0;
+        }
+
+        nav.main-nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav.main-nav li {
+            margin: 0 15px;
+        }
+
+        nav.main-nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        nav.main-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 60px 0;
+            background-color: var(--white, #fcfcfc);
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(to bottom right, transparent 49%, rgba(0, 181, 191, 0.2) 50%);
+        }
+
+        .hero-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .hero-container.chat-mode {
+            justify-content: center;
+            gap: 40px;
+            padding: 16px 0 56px;
+            background: transparent;
+            position: relative;
+        }
+
+        .hero-container.chat-mode::before,
+        .hero-container.chat-mode::after {
+            content: '';
+            position: absolute;
+            z-index: 0;
+            background: rgba(0, 181, 191, 0.08);
+            border-radius: 28px;
+            filter: drop-shadow(0 28px 50px rgba(1, 54, 58, 0.08));
+            animation: heroBubbleFloat 10s ease-in-out infinite;
+            pointer-events: none;
+            transform: translateY(0) rotate(var(--bubble-rotate, 0deg));
+        }
+
+        .hero-container.chat-mode::before {
+            width: 320px;
+            height: 180px;
+            top: -18px;
+            left: -24px;
+            --bubble-rotate: -2deg;
+        }
+
+        .hero-container.chat-mode::after {
+            width: 240px;
+            height: 150px;
+            bottom: -36px;
+            left: 140px;
+            --bubble-rotate: 4deg;
+            animation-delay: 2.5s;
+        }
+
+        .hero-container.chat-mode > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-container.chat-mode .hero-animation {
+            width: 100%;
+            max-width: var(--visual-max-width);
+        }
+
+        @media (min-width: 768px) {
+            .hero-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .hero-container.chat-mode {
+                flex-direction: row;
+                justify-content: center;
+                align-items: stretch;
+                padding: 56px 20px 72px;
+                gap: 72px;
+            }
+
+            .hero-container.chat-mode .hero-animation {
+                width: auto;
+                max-width: var(--visual-max-width);
+                flex: 0 0 auto;
+            }
+
+            .hero-chat {
+                max-width: 640px;
+            }
+
+            .hero-content {
+                width: 48%;
+            }
+
+            .hero-animation {
+                width: auto;
+                max-width: var(--visual-max-width);
+                flex: 0 0 auto;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .hero-chat {
+                max-width: 720px;
+            }
+
+            .hero-container.chat-mode {
+                gap: 96px;
+            }
+        }
+
+        .hero-content h2 {
+            font-size: 2rem;
+            margin-bottom: 24px;
+            line-height: 1.3;
+            color: var(--teal-dark);
+        }
+
+        .hero-content p {
+            margin-bottom: 24px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--teal-primary);
+            color: var(--white);
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            background-color: var(--teal-deep);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-animation {
+            width: 100%;
+            max-width: var(--visual-max-width);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 16px;
+            transition: transform 0.6s ease, max-width 0.6s ease;
+        }
+
+        .hero-animation.chat-expanded {
+            max-width: var(--visual-max-width);
+            transform: none;
+        }
+
+        .hero-lottie,
+        .hero-animation canvas,
+        .hero-animation svg,
+        .hero-animation img {
+            width: 100% !important;
+            height: auto !important;
+            max-width: var(--visual-max-width);
+        }
+
+        .hero-lottie {
+            min-height: 220px;
+        }
+
+        .hero-animation.chat-expanded .hero-lottie {
+            max-width: var(--visual-max-width);
+        }
+
+        .hero-chat {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            width: 100%;
+            max-width: 560px;
+            flex: 1 1 420px;
+        }
+
+        .hero-chat .chat-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            min-height: 320px;
+            max-height: clamp(420px, 62vh, 560px);
+            overflow-y: auto;
+            padding-right: 8px;
+            scroll-behavior: smooth;
+            background: transparent;
+            padding-bottom: 4px;
+        }
+
+        .hero-chat .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .hero-chat .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(0, 181, 191, 0.35);
+            border-radius: 999px;
+        }
+
+        .hero-chat .chat-empty {
+            align-self: flex-start;
+            color: rgba(1, 54, 58, 0.72);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            padding: 18px 22px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px dashed rgba(0, 181, 191, 0.3);
+            box-shadow: 0 18px 40px rgba(1, 54, 58, 0.1);
+            animation: floatHint 6s ease-in-out infinite;
+            position: relative;
+        }
+
+        .hero-chat .chat-empty::after {
+            content: '';
+            position: absolute;
+            left: 36px;
+            bottom: -10px;
+            width: 18px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px dashed rgba(0, 181, 191, 0.3);
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+            box-shadow: 12px 12px 30px rgba(1, 54, 58, 0.08);
+        }
+
+        .hero-chat .chat-empty strong {
+            display: block;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+            color: var(--teal-dark);
+        }
+
+        .hero-chat .chat-form {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 4px;
+        }
+
+        .hero-chat .chat-input {
+            flex: 1;
+            border: 1px solid rgba(0, 131, 138, 0.25);
+            border-radius: 20px;
+            padding: 14px 18px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            min-height: 52px;
+        }
+
+        .hero-chat .chat-input:focus {
+            outline: none;
+            border-color: var(--teal-primary);
+            box-shadow: 0 0 0 3px rgba(0, 181, 191, 0.18);
+        }
+
+        .hero-chat .chat-submit {
+            background: var(--teal-primary);
+            color: var(--white);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 999px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .hero-chat .chat-hint {
+            font-size: 0.85rem;
+            color: rgba(1, 54, 58, 0.68);
+            margin-top: -8px;
+            padding-left: 4px;
+        }
+
+        .hero-chat .chat-submit:hover:not(:disabled) {
+            background: var(--teal-dark);
+            transform: translateY(-1px);
+        }
+
+        .hero-chat .chat-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .hero-chat .chat-bubble {
+            position: relative;
+            padding: 18px 22px;
+            border-radius: 24px;
+            font-weight: 500;
+            max-width: 94%;
+            line-height: 1.5;
+            word-break: break-word;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 18px 40px rgba(1, 54, 58, 0.16);
+        }
+
+        .hero-chat .chat-bubble-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-chat .chat-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            width: 18px;
+            height: 18px;
+            background: inherit;
+            transform: rotate(45deg);
+        }
+
+        .hero-chat .chat-bubble-assistant {
+            align-self: flex-start;
+            background: var(--white, #fcfcfc);
+            color: var(--text-dark);
+            border: 1px solid rgba(0, 131, 138, 0.22);
+        }
+
+        .hero-chat .chat-bubble-assistant::after {
+            left: 36px;
+            border-top: 1px solid rgba(0, 131, 138, 0.22);
+            border-left: 1px solid rgba(0, 131, 138, 0.22);
+            box-shadow: 14px 14px 36px rgba(1, 54, 58, 0.12);
+        }
+
+        .hero-chat .chat-bubble-user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--teal-primary), var(--teal-deep));
+            color: var(--white);
+            border: none;
+        }
+
+        .hero-chat .chat-bubble-user::after {
+            left: auto;
+            right: 28px;
+            border-right: none;
+            border-bottom: none;
+            box-shadow: 10px 10px 30px rgba(0, 101, 106, 0.2);
+        }
+
+        .hero-chat .chat-bubble-system {
+            align-self: center;
+            background: rgba(255, 255, 255, 0.94);
+            color: var(--teal-dark);
+            border: 1px dashed rgba(0, 181, 191, 0.4);
+        }
+
+        .hero-chat .chat-bubble-system::after {
+            left: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            border: 1px dashed rgba(0, 181, 191, 0.4);
+            border-top: none;
+            border-left: none;
+            box-shadow: 12px 12px 30px rgba(0, 131, 138, 0.18);
+        }
+
+        .hero-chat .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 46px;
+        }
+
+        .hero-chat .typing-indicator::after {
+            display: none;
+        }
+
+        .hero-chat .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.25;
+            animation: typingPulse 1.2s infinite;
+        }
+
+        .hero-chat .typing-dot:nth-child(2) {
+            animation-delay: 0.18s;
+        }
+
+        .hero-chat .typing-dot:nth-child(3) {
+            animation-delay: 0.36s;
+        }
+
+        @keyframes floatHint {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
+        @keyframes heroBubbleFloat {
+            0%,
+            100% {
+                transform: translateY(0) rotate(var(--bubble-rotate, 0deg));
+            }
+
+            50% {
+                transform: translateY(-14px) rotate(var(--bubble-rotate, 0deg));
+            }
+        }
+
+        @keyframes typingPulse {
+            0%,
+            100% {
+                opacity: 0.25;
+                transform: translateY(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(-3px);
+            }
+        }
+
+        @media (min-width: 992px) {
+            .hero-animation.chat-expanded {
+                max-width: var(--visual-max-width);
+                transform: none;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .hero-container.chat-mode {
+                padding: 36px 16px 52px;
+                gap: 40px;
+            }
+
+            .hero-chat .chat-bubble {
+                padding: 16px 18px;
+            }
+
+            .hero-chat .chat-bubble-assistant::after {
+                left: 24px;
+            }
+
+            .hero-chat .chat-bubble-user::after {
+                right: 22px;
+            }
+        }
+
+        .hero-animation-fallback {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 220px;
+        }
+
+        .hero-animation-fallback img {
+            width: 100%;
+            max-width: var(--visual-max-width);
+            height: auto;
+            display: block;
+            object-fit: contain;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Sections */
+        section {
+            padding: 60px 0;
+            position: relative;
+        }
+
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            text-align: center;
+            color: var(--teal-dark);
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--teal-primary);
+            border-radius: 2px;
+        }
+
+        .section-white {
+            background-color: var(--white, #fcfcfc);
+        }
+
+        .section-teal-tint {
+            background-color: var(--teal-tint);
+        }
+
+        .section-white::after,
+        .section-teal-tint::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+        }
+
+        .section-white::after {
+            background: linear-gradient(to bottom right, var(--white, #fcfcfc) 49%, rgba(0, 181, 191, 0.15) 50%);
+        }
+
+        .section-teal-tint::after {
+            background: linear-gradient(to bottom right, rgba(0, 181, 191, 0.15) 49%, var(--white, #fcfcfc) 50%);
+        }
+
+        /* Introduction Section */
+        .intro-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+
+        @media (min-width: 768px) {
+            .intro-content {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+        }
+
+        .intro-text {
+            flex: 1;
+            background-color: var(--white, #fcfcfc);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .intro-text p {
+            margin-bottom: 16px;
+            font-size: 1.05rem;
+        }
+
+        .intro-image {
+            flex: 0 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: var(--visual-max-width);
+            margin: 0 auto;
+        }
+
+        .intro-image img {
+            width: 100%;
+            max-width: var(--visual-max-width);
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Risks Section */
+        .risks-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .risks-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .risk-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 25px;
+            background-color: var(--white, #fcfcfc);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .risk-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .risk-icon {
+            color: var(--teal-primary);
+            margin-right: 15px;
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+        }
+
+        .risk-content h3 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: var(--teal-dark);
+        }
+
+        .risk-content p {
+            margin-bottom: 12px;
+        }
+
+        .risk-content ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .risk-content li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        /* Tips Section */
+        .tips-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .tips-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .tip-item {
+            background-color: var(--white, #fcfcfc);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+
+        .tip-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .tip-item h3 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--teal-dark);
+        }
+
+        .tip-item p {
+            margin-bottom: 15px;
+        }
+
+        .tip-item ul {
+            margin-left: 20px;
+        }
+
+        .tip-item li {
+            margin-bottom: 10px;
+        }
+
+        /* Activities Section */
+        .activities-container {
+            display: grid;
+            gap: 24px;
+        }
+
+        @media (min-width: 768px) {
+            .activities-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .activity-category {
+            background-color: var(--white, #fcfcfc);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .activity-category:hover {
+            transform: translateY(-5px);
+        }
+
+        .activity-category h3 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--teal-dark);
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--teal-primary);
+        }
+
+        .activity-category ul {
+            margin-left: 20px;
+        }
+
+        .activity-category li {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        /* About Section */
+        .about-content {
+            background-color: var(--white, #fcfcfc);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .about-content p {
+            margin-bottom: 16px;
+            font-size: 1.05rem;
+        }
+
+        .about-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .team-title {
+            font-weight: 700;
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            text-align: center;
+            color: var(--teal-dark);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .team-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .team-member {
+            padding: 20px;
+            background-color: var(--white, #fcfcfc);
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-member p:first-child {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--teal-dark);
+        }
+
+        .team-member p:last-child {
+            font-size: 0.95rem;
+            color: var(--teal-primary);
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--teal-dark);
+            color: var(--white);
+            padding: 40px 0 20px;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+        }
+
+        .footer-brand {
+            margin-bottom: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .footer-brand {
+                margin-bottom: 0;
+            }
+        }
+
+        .footer-brand h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .footer-contact {
+                align-items: flex-end;
+            }
+        }
+
+        .footer-contact h3 {
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .contact-email {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .contact-email a {
+            color: var(--white);
+            text-decoration: none;
+            margin-left: 10px;
+            transition: color 0.3s;
+        }
+
+        .contact-email a:hover {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: underline;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            color: var(--white);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            color: rgba(255, 255, 255, 0.85);
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            margin-top: 30px;
+            padding-top: 20px;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .footer-bottom {
+                text-align: left;
+            }
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--teal-dark);
+            color: var(--white);
+            padding: 12px 16px;
+            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        @media (max-width: 767px) {
+            .mobile-nav {
+                display: block;
+            }
+
+            body {
+                padding-bottom: 60px;
+            }
+
+            nav.main-nav {
+                display: none;
+            }
+        }
+
+        .mobile-nav ul {
+            display: flex;
+            justify-content: space-around;
+            list-style: none;
+        }
+
+        .mobile-nav a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .mobile-nav a:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .mobile-nav .icon {
+            margin-bottom: 5px;
+        }
+
+        /* Utility classes */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        .animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Icons */
+        .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            stroke-width: 0;
+            stroke: currentColor;
+            fill: currentColor;
+            vertical-align: middle;
+        }
+
+        .icon-small {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>CUIDADO COM AS TELAS</h1>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <ul>
+                <li><a href="#">Início</a></li>
+                <li><a href="#introducao">Campanha</a></li>
+                <li><a href="#riscos">Riscos</a></li>
+                <li><a href="#dicas">Dicas</a></li>
+                <li><a href="#atividades">Atividades</a></li>
+                <li><a href="#sobre">Sobre</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-container" id="heroContainer">
+            <div class="hero-content animate-on-scroll" id="heroContent">
+                <h2>"Excesso de telas pode roubar o que a infância tem de melhor."</h2>
+                <p>Bem-vindo à campanha "Cuidado com as Telas", uma iniciativa para conscientizar sobre os riscos do uso excessivo de dispositivos digitais por crianças e oferecer soluções práticas para pais e educadores.</p>
+                <button type="button" class="btn" id="saibaMaisBtn">Saiba mais</button>
+            </div>
+            <div class="hero-chat hidden" id="heroChat" aria-live="polite">
+                <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-relevant="additions text">
+                    <div class="chat-empty" id="chatEmpty">
+                        <strong>Converse com o nosso robozinho.</strong>
+                        Escreva a primeira mensagem e veja como ele responde no seu ritmo.
+                    </div>
+                </div>
+                <form class="chat-form" id="chatForm" novalidate>
+                    <label class="sr-only" for="chatInput">Digite sua mensagem para conversar com a IA</label>
+                    <input class="chat-input" id="chatInput" type="text" name="message" autocomplete="off" placeholder="Digite sua mensagem" maxlength="500" required>
+                    <button class="chat-submit" type="submit" id="chatSubmit">Enviar</button>
+                </form>
+                <p class="chat-hint">Pressione Enter ou toque em “Enviar” para mandar a sua mensagem.</p>
+            </div>
+            <div class="hero-animation animate-on-scroll" id="heroAnimation">
+                <div
+                    id="heroAnim"
+                    class="hero-lottie"
+                    data-animation-path="./animation.json"
+                    data-neutral-animation-path="./animationNeutral.json"
+                    data-thinking-animation-path="./animationThinking.json"
+                    data-speaking-animation-path="./animationSpeaking.json"
+                    role="img"
+                    aria-label="Animação ilustrativa da campanha Cuidado com as Telas"
+                ></div>
+                <div id="heroAnimationFallback" class="hero-animation-fallback hidden">
+                    <img src="./imagemRobo.png" alt="Ilustração de um robô representando a campanha Cuidado com as Telas" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Introduction Section -->
+    <section id="introducao" class="section-teal-tint">
+        <div class="container">
+            <h2>Nossa Campanha</h2>
+            
+            <div class="intro-content">
+                <div class="intro-text animate-on-scroll">
+                    <p>A campanha "Cuidado com as Telas" nasceu da preocupação com o crescente tempo que crianças passam em frente a dispositivos digitais. Nosso objetivo é informar pais, responsáveis e educadores sobre os impactos negativos do uso excessivo de telas e oferecer estratégias práticas para um uso mais equilibrado e saudável da tecnologia.</p>
+                    <p>Não se trata de demonizar a tecnologia, que traz inúmeros benefícios quando usada adequadamente, mas sim de promover um uso consciente e moderado, especialmente durante a infância, fase crucial para o desenvolvimento físico, cognitivo e socioemocional.</p>
+                    <p>Neste site, você encontrará informações detalhadas sobre os riscos do uso excessivo de telas, dicas práticas para equilibrar o uso de dispositivos digitais e sugestões de atividades alternativas para crianças.</p>
+                </div>
+                <div class="intro-image animate-on-scroll">
+                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%2014%20de%20abr.%20de%202025%2C%2013_18_49-nwOeRKFqw06JSNpzzbyhAMLe8SYy1x.png" alt="Panfleto da campanha Cuidado com as Telas">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risks Section -->
+    <section id="riscos" class="section-white">
+        <div class="container">
+            <h2>Os riscos do uso excessivo de telas</h2>
+
+            <div class="risks-grid">
+                <div class="risk-item animate-on-scroll">
+                    <svg class="risk-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <div class="risk-content">
+                        <h3>Desenvolvimento prejudicado</h3>
+                        <p>O uso excessivo de telas pode comprometer significativamente o desenvolvimento infantil em várias áreas:</p>
+                        <ul>
+                            <li>Redução da capacidade de concentração e atenção</li>
+                            <li>Diminuição da criatividade e imaginação</li>
+                            <li>Atraso no desenvolvimento da linguagem</li>
+                            <li>Dificuldades de aprendizagem</li>
+                            <li>Menor desenvolvimento de habilidades motoras finas</li>
+                        </ul>
+                        <p>Estudos mostram que crianças que passam muito tempo em dispositivos digitais têm menos oportunidades de desenvolver habilidades cruciais através de brincadeiras livres e interações face a face.</p>
+                    </div>
+                </div>
+
+                <div class="risk-item animate-on-scroll">
+                    <svg class="risk-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <div class="risk-content">
+                        <h3>Sono afetado</h3>
+                        <p>A exposição às telas pode prejudicar significativamente a qualidade do sono das crianças:</p>
+                        <ul>
+                            <li>A luz azul emitida pelos dispositivos suprime a produção de melatonina, hormônio do sono</li>
+                            <li>Conteúdos estimulantes antes de dormir aumentam a excitação mental</li>
+                            <li>Uso noturno de dispositivos está associado a menos horas de sono</li>
+                            <li>Crianças com TVs ou dispositivos nos quartos dormem em média 30 minutos menos por noite</li>
+                            <li>Sono inadequado afeta o humor, comportamento e desempenho escolar</li>
+                        </ul>
+                        <p>Um sono de qualidade é fundamental para o desenvolvimento cerebral, crescimento físico e bem-estar emocional das crianças.</p>
+                    </div>
+                </div>
+
+                <div class="risk-item animate-on-scroll">
+                    <svg class="risk-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <div class="risk-content">
+                        <h3>Menos contato social</h3>
+                        <p>O tempo excessivo em frente às telas reduz as oportunidades de interação social presencial, essencial para o desenvolvimento:</p>
+                        <ul>
+                            <li>Diminuição da capacidade de interpretar expressões faciais e linguagem corporal</li>
+                            <li>Menor desenvolvimento de habilidades de comunicação verbal</li>
+                            <li>Redução da empatia e compreensão das emoções alheias</li>
+                            <li>Dificuldades em resolver conflitos interpessoais</li>
+                            <li>Isolamento social e potencial para dependência digital</li>
+                        </ul>
+                        <p>As interações face a face são insubstituíveis para o desenvolvimento de habilidades sociais saudáveis.</p>
+                    </div>
+                </div>
+
+                <div class="risk-item animate-on-scroll">
+                    <svg class="risk-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <div class="risk-content">
+                        <h3>Mais ansiedade e irritação</h3>
+                        <p>O uso excessivo de telas está associado a problemas de saúde mental e comportamental:</p>
+                        <ul>
+                            <li>Aumento dos níveis de ansiedade e estresse</li>
+                            <li>Maior irritabilidade e comportamentos explosivos</li>
+                            <li>Dificuldade em lidar com a frustração e adiar gratificações</li>
+                            <li>Sintomas de abstinência quando os dispositivos são removidos</li>
+                            <li>Maior risco de depressão em adolescentes com uso intensivo de redes sociais</li>
+                        </ul>
+                        <p>O estímulo constante e a natureza viciante de muitos aplicativos e jogos podem sobrecarregar o sistema nervoso em desenvolvimento das crianças.</p>
+                    </div>
+                </div>
+
+                <div class="risk-item animate-on-scroll">
+                    <svg class="risk-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <div class="risk-content">
+                        <h3>Problemas físicos</h3>
+                        <p>O tempo excessivo em dispositivos digitais está associado a diversos problemas de saúde física:</p>
+                        <ul>
+                            <li>Sedentarismo e aumento do risco de obesidade infantil</li>
+                            <li>Problemas posturais e dores nas costas, pescoço e ombros</li>
+                            <li>Fadiga visual, olhos secos e potenciais danos à visão</li>
+                            <li>Síndrome do túnel do carpo e tendinites em casos graves</li>
+                            <li>Menor desenvolvimento de habilidades motoras grossas</li>
+                        </ul>
+                        <p>Crianças em fase de crescimento são particularmente vulneráveis a esses problemas físicos, que podem ter consequências a longo prazo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tips Section -->
+    <section id="dicas" class="section-teal-tint">
+        <div class="container">
+            <h2>O que fazer para equilibrar o uso de telas</h2>
+
+            <div class="tips-grid">
+                <div class="tip-item animate-on-scroll">
+                    <h3>Estabeleça limites claros</h3>
+                    <p>Defina regras consistentes sobre o uso de dispositivos digitais:</p>
+                    <ul>
+                        <li>Estabeleça horários específicos para o uso de telas</li>
+                        <li>Crie zonas livres de telas em casa (quartos, mesa de jantar)</li>
+                        <li>Defina um tempo máximo diário de acordo com a idade</li>
+                        <li>Use temporizadores para ajudar as crianças a entenderem os limites</li>
+                        <li>Mantenha-se firme com as regras estabelecidas</li>
+                    </ul>
+                </div>
+
+                <div class="tip-item animate-on-scroll">
+                    <h3>Ofereça alternativas</h3>
+                    <p>Incentive atividades que não envolvam telas:</p>
+                    <ul>
+                        <li>Tenha livros, jogos de tabuleiro e brinquedos facilmente acessíveis</li>
+                        <li>Planeje atividades ao ar livre regularmente</li>
+                        <li>Inscreva as crianças em atividades esportivas ou artísticas</li>
+                        <li>Promova brincadeiras que estimulem a criatividade</li>
+                        <li>Crie uma caixa de "estou entediado" com ideias de atividades</li>
+                    </ul>
+                </div>
+
+                <div class="tip-item animate-on-scroll">
+                    <h3>Dê o exemplo</h3>
+                    <p>As crianças aprendem observando os adultos:</p>
+                    <ul>
+                        <li>Monitore seu próprio uso de dispositivos eletrônicos</li>
+                        <li>Evite usar o celular durante as refeições e conversas</li>
+                        <li>Demonstre interesse por atividades não-digitais</li>
+                        <li>Fale sobre a importância de equilibrar o tempo de tela</li>
+                        <li>Participe de "desintoxicações digitais" em família</li>
+                    </ul>
+                </div>
+
+                <div class="tip-item animate-on-scroll">
+                    <h3>Monitore o conteúdo</h3>
+                    <p>Nem todo tempo de tela é igual:</p>
+                    <ul>
+                        <li>Conheça os aplicativos, jogos e programas que seus filhos utilizam</li>
+                        <li>Priorize conteúdos educativos e interativos</li>
+                        <li>Use controles parentais quando apropriado</li>
+                        <li>Assista e jogue junto com as crianças quando possível</li>
+                        <li>Converse sobre o que eles veem e experimentam online</li>
+                    </ul>
+                </div>
+
+                <div class="tip-item animate-on-scroll">
+                    <h3>Crie rotinas saudáveis</h3>
+                    <p>Estruture o dia para incluir diversos tipos de atividades:</p>
+                    <ul>
+                        <li>Estabeleça horários regulares para refeições, sono e atividades</li>
+                        <li>Inclua tempo para brincadeiras livres todos os dias</li>
+                        <li>Evite telas pelo menos uma hora antes de dormir</li>
+                        <li>Planeje momentos de conexão familiar sem dispositivos</li>
+                        <li>Reserve tempo para atividade física diária</li>
+                    </ul>
+                </div>
+
+                <div class="tip-item animate-on-scroll">
+                    <h3>Comunique-se abertamente</h3>
+                    <p>Mantenha diálogo constante sobre o uso de tecnologia:</p>
+                    <ul>
+                        <li>Explique os motivos por trás das regras de uso de telas</li>
+                        <li>Converse sobre os benefícios e riscos da tecnologia</li>
+                        <li>Ensine sobre cidadania digital e segurança online</li>
+                        <li>Esteja aberto para ajustar as regras conforme necessário</li>
+                        <li>Elogie quando as crianças respeitam os limites estabelecidos</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Activities Section -->
+    <section id="atividades" class="section-white">
+        <div class="container">
+            <h2>Atividades alternativas às telas</h2>
+
+            <div class="activities-container">
+                <div class="activity-category animate-on-scroll">
+                    <h3>Atividades ao ar livre</h3>
+                    <ul>
+                        <li>Andar de bicicleta, patins ou skate</li>
+                        <li>Brincar em parques e praças</li>
+                        <li>Fazer piqueniques em família</li>
+                        <li>Praticar esportes como futebol, vôlei ou basquete</li>
+                        <li>Explorar trilhas e fazer caminhadas</li>
+                        <li>Plantar e cuidar de um pequeno jardim</li>
+                        <li>Brincar com água (piscinas, sprinklers, balões d'água)</li>
+                        <li>Fazer caça ao tesouro ao ar livre</li>
+                    </ul>
+                </div>
+
+                <div class="activity-category animate-on-scroll">
+                    <h3>Atividades criativas</h3>
+                    <ul>
+                        <li>Desenhar, pintar e colorir</li>
+                        <li>Modelar com massinha ou argila</li>
+                        <li>Fazer artesanato com materiais recicláveis</li>
+                        <li>Criar histórias e peças teatrais</li>
+                        <li>Aprender a tocar um instrumento musical</li>
+                        <li>Fazer experimentos científicos simples</li>
+                        <li>Construir com blocos e peças de montar</li>
+                        <li>Criar álbuns de fotos ou scrapbooks</li>
+                    </ul>
+                </div>
+
+                <div class="activity-category animate-on-scroll">
+                    <h3>Atividades em família</h3>
+                    <ul>
+                        <li>Jogar jogos de tabuleiro e cartas</li>
+                        <li>Cozinhar e assar juntos</li>
+                        <li>Ler livros em voz alta</li>
+                        <li>Fazer noites de cinema com filmes apropriados</li>
+                        <li>Organizar caças ao tesouro dentro de casa</li>
+                        <li>Montar quebra-cabeças</li>
+                        <li>Fazer passeios culturais a museus e exposições</li>
+                        <li>Praticar esportes em família</li>
+                    </ul>
+                </div>
+
+                <div class="activity-category animate-on-scroll">
+                    <h3>Atividades educativas</h3>
+                    <ul>
+                        <li>Visitar bibliotecas e participar de clubes de leitura</li>
+                        <li>Fazer experimentos científicos simples</li>
+                        <li>Aprender sobre diferentes culturas e países</li>
+                        <li>Praticar um novo idioma</li>
+                        <li>Visitar museus e centros de ciências</li>
+                        <li>Criar projetos de pesquisa sobre temas de interesse</li>
+                        <li>Aprender habilidades práticas como costura ou marcenaria</li>
+                        <li>Participar de oficinas e cursos extracurriculares</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="sobre" class="section-teal-tint">
+        <div class="container">
+            <h2>Sobre o projeto</h2>
+
+            <div class="about-content animate-on-scroll">
+                <p>A campanha "Cuidado com as Telas" é uma iniciativa de conscientização sobre os malefícios do uso excessivo de telas digitais por crianças. Nosso objetivo é informar pais, responsáveis e educadores sobre os riscos físicos, emocionais e sociais do uso excessivo de dispositivos digitais na infância, além de oferecer orientações sobre como promover um uso equilibrado.</p>
+                <p>Este projeto foi desenvolvido como parte das atividades acadêmicas dos estudantes da Universidade Estadual de Ponta Grossa (UEPG), com o intuito de contribuir para a saúde e bem-estar das crianças em nossa comunidade.</p>
+                <p>Acreditamos que a tecnologia pode ser uma ferramenta valiosa quando usada de forma consciente e equilibrada. Nossa missão é ajudar famílias a encontrarem esse equilíbrio, garantindo que as crianças possam desfrutar dos benefícios da tecnologia sem comprometer seu desenvolvimento saudável.</p>
+            </div>
+
+            <h3 class="team-title">Nossa equipe</h3>
+            <div class="team-grid">
+                <div class="team-member animate-on-scroll">
+                    <p>Felipe Vieira</p>
+                    <p>UEPG</p>
+                </div>
+                <div class="team-member animate-on-scroll">
+                    <p>Karoline Salazar</p>
+                    <p>UEPG</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h2>CUIDADO COM AS TELAS</h2>
+                    <p>Uma campanha de conscientização da UEPG</p>
+                </div>
+
+                <div class="footer-contact">
+                    <h3>Contato</h3>
+                    <div class="contact-email">
+                        <svg class="icon icon-small" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <a href="mailto:24008926@uepg.br">24008926@uepg.br</a>
+                    </div>
+                    <div class="social-links">
+                        <a href="#">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="#">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Campanha Cuidado com as Telas - Todos os direitos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav">
+        <ul>
+            <li>
+                <a href="#">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    Início
+                </a>
+            </li>
+            <li>
+                <a href="#riscos">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    Riscos
+                </a>
+            </li>
+            <li>
+                <a href="#dicas">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    Dicas
+                </a>
+            </li>
+            <li>
+                <a href="#sobre">
+                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    Sobre
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js" integrity="sha512-jEnuDt6jfecCjthQAJ+ed0MTVA++5ZKmlUcmDGBv2vUI/REn6FuIdixLNnQT+vKusE2hhTk2is3cFvv5wA+Sgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="script.js"></script>
+</body>
+</html>

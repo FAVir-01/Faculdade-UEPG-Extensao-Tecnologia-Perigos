@@ -1,18 +1,41 @@
 # Chat Proxy
 
-Endpoint Next.js `/api/chat` que encaminha o corpo JSON recebido para `CHAT_WEBHOOK_URL` utilizando cabeçalhos:
+Endpoint Next.js `/api/chat` que encaminha o corpo JSON recebido para `CHAT_WEBHOOK_URL` utilizando cabeçalhos de autenticação e assinatura.
 
-- `Authorization: Basic user:pass` (a partir de `CHAT_BASIC_USER` e `CHAT_BASIC_PASS`)
-- `X-Signature: CHAT_SHARED_SECRET`
+## `/api/chat`
 
-O status e o corpo retornados pelo webhook são repassados ao cliente.
+- **URL:** `/api/chat`
+- **Variáveis de ambiente:**
+  - `CHAT_WEBHOOK_URL`: URL do webhook n8n que receberá o POST
+  - `CHAT_BASIC_USER`: usuário para o header `Authorization: Basic`
+  - `CHAT_BASIC_PASS`: senha para o header `Authorization: Basic`
+  - `CHAT_SHARED_SECRET`: valor enviado em `X-Signature`
+  - `ALLOWED_ORIGIN` (opcional): origem permitida para CORS
 
-## Variáveis de ambiente
+### Como testar
 
-- `CHAT_WEBHOOK_URL`
-- `CHAT_BASIC_USER`
-- `CHAT_BASIC_PASS`
-- `CHAT_SHARED_SECRET`
+Healthcheck:
+
+```bash
+curl -s https://SEU-APP.vercel.app/api/chat
+# {"ok":true}
+```
+
+POST simples (evento padrão `conversation_ongoing`):
+
+```bash
+curl -i -X POST https://SEU-APP.vercel.app/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"ping":"ok"}'
+```
+
+Iniciando uma conversa (evento `conversation_started`):
+
+```bash
+curl -i -X POST "https://SEU-APP.vercel.app/api/chat?event=conversation_started" \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"Cliente"}'
+```
 
 ## Desenvolvimento
 
@@ -25,3 +48,4 @@ npm run dev
 ```bash
 npm test
 ```
+
