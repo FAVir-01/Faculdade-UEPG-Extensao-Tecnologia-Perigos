@@ -571,6 +571,11 @@ const initialisePage = () => {
     const thinkingAnimationPath = getAnimationPath(heroAnim, 'data-thinking-animation-path', './animationThinking.json');
     const speakingAnimationPath = getAnimationPath(heroAnim, 'data-speaking-animation-path', './animationSpeaking.json');
 
+    const idleAnimationPaths = Array.from(
+        new Set([defaultAnimationPath, neutralAnimationPath].filter(Boolean)),
+    );
+
+    let lastIdleAnimationPath = idleAnimationPaths[0] ?? null;
     let heroAnimationInstance = null;
     let currentAnimationRequestId = 0;
     let activeHeroAnimationPath = null;
@@ -579,11 +584,35 @@ const initialisePage = () => {
     let isSpeakingAnimationActive = false;
     let speakingTimeoutId = null;
 
+    const getNextIdleAnimationPath = () => {
+        if (idleAnimationPaths.length === 0) {
+            return null;
+        }
+
+        if (idleAnimationPaths.length === 1) {
+            const [onlyPath] = idleAnimationPaths;
+            lastIdleAnimationPath = onlyPath;
+            return onlyPath;
+        }
+
+        const currentIndex = idleAnimationPaths.indexOf(lastIdleAnimationPath);
+        const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % idleAnimationPaths.length;
+        const nextPath = idleAnimationPaths[nextIndex];
+
+        lastIdleAnimationPath = nextPath;
+
+        return nextPath;
+    };
+
     const updateActiveHeroAnimationPath = (path) => {
         activeHeroAnimationPath = path;
 
         if (path && path !== thinkingAnimationPath && path !== speakingAnimationPath) {
             restoreHeroAnimationPath = path;
+        }
+
+        if (path && idleAnimationPaths.includes(path)) {
+            lastIdleAnimationPath = path;
         }
     };
 
@@ -632,7 +661,11 @@ const initialisePage = () => {
             return;
         }
 
-        const targetPath = restoreHeroAnimationPath ?? neutralAnimationPath ?? defaultAnimationPath;
+        let targetPath = getNextIdleAnimationPath();
+
+        if (!targetPath) {
+            targetPath = restoreHeroAnimationPath ?? neutralAnimationPath ?? defaultAnimationPath;
+        }
 
         isThinkingAnimationActive = false;
 
@@ -834,7 +867,11 @@ const initialisePage = () => {
                 heroAnimationContainer.classList.add('chat-expanded');
             }
 
-            loadHeroAnimation(neutralAnimationPath, { preserveCurrentAnimation: true });
+            const idleAnimationPath = getNextIdleAnimationPath() ?? neutralAnimationPath ?? defaultAnimationPath;
+
+            if (idleAnimationPath) {
+                loadHeroAnimation(idleAnimationPath, { preserveCurrentAnimation: true });
+            }
 
             scrollChatToBottom();
 
