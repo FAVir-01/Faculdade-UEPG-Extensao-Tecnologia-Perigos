@@ -2,19 +2,23 @@
 document.addEventListener("DOMContentLoaded", () => {
     const links = document.querySelectorAll('a[href^="#"]');
     const heroAnimationContainer = document.getElementById('heroAnimation');
-    const heroContent = document.getElementById('heroContent');
-    const heroContainer = document.getElementById('heroContainer');
     const saibaMaisBtn = document.getElementById('saibaMaisBtn');
     let heroAnimationInstance = null;
 
     for (const link of links) {
         link.addEventListener("click", function (e) {
-            e.preventDefault();
-
             const targetId = this.getAttribute("href").substring(1);
+
+            if (!targetId) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                return;
+            }
+
             const targetElement = document.getElementById(targetId);
 
             if (targetElement) {
+                e.preventDefault();
                 window.scrollTo({
                     top: targetElement.offsetTop - 20,
                     behavior: "smooth",
@@ -38,16 +42,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (saibaMaisBtn) {
         saibaMaisBtn.addEventListener('click', () => {
-            if (heroContent) {
-                heroContent.classList.add('hidden');
-            }
+            const protocolosSection = document.getElementById('protocolos');
 
-            if (heroContainer) {
-                heroContainer.classList.add('only-animation');
-            }
-
-            if (heroAnimationContainer) {
-                heroAnimationContainer.classList.add('only');
+            if (protocolosSection) {
+                window.scrollTo({
+                    top: protocolosSection.offsetTop - 20,
+                    behavior: 'smooth'
+                });
             }
 
             heroAnimationInstance?.play();
@@ -82,17 +83,21 @@ document.addEventListener("DOMContentLoaded", () => {
             const sectionTop = current.offsetTop - 100;
             const sectionId = current.getAttribute('id');
             
+            const mobileLink = document.querySelector('.mobile-nav a[href*=' + sectionId + ']');
+            const desktopLink = document.querySelector('.main-nav a[href*=' + sectionId + ']');
+
             if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                document.querySelector('.mobile-nav a[href*=' + sectionId + ']').classList.add('active');
-                document.querySelector('.main-nav a[href*=' + sectionId + ']')?.classList.add('active');
+                mobileLink?.classList.add('active');
+                desktopLink?.classList.add('active');
             } else {
-                document.querySelector('.mobile-nav a[href*=' + sectionId + ']').classList.remove('active');
-                document.querySelector('.main-nav a[href*=' + sectionId + ']')?.classList.remove('active');
+                mobileLink?.classList.remove('active');
+                desktopLink?.classList.remove('active');
             }
         });
     }
 
     window.addEventListener('scroll', highlightNavigation);
+    highlightNavigation();
     
     // Add hover effects to cards
     const cards = document.querySelectorAll('.risk-item, .tip-item, .activity-category, .team-member');
